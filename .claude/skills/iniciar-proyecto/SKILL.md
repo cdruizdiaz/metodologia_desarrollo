@@ -8,6 +8,20 @@ description: Arranca un proyecto nuevo con el Ciclo de desarrollo v3 - crea el a
 Se corre una sola vez. Si `CLAUDE.md` ya tiene un enlace en "Artifact", detenete y avisá
 que el proyecto ya está iniciado.
 
+## Antes de empezar: lo mínimo para que los comandos funcionen
+
+Verificá, y si algo falta detenete y decí qué falta y cómo se resuelve. No sigas a medias.
+
+- **git**: `git --version` responde.
+- **Identidad de git**: `git config user.name` y `git config user.email` tienen valor. Si no,
+  pedile los datos al usuario y configuralos solo para este repo.
+- **Artifacts**: en esta sesión están disponibles las herramientas `Artifact` y `ArtifactData`.
+  Sin ellas no se puede crear ni leer el artifact del proyecto, y ningún comando del ciclo
+  funciona. Si faltan, el usuario tiene que iniciar sesión en Claude Code con la cuenta de
+  claude.ai donde van a vivir los artifacts.
+
+El repo remoto, `gh` y las dependencias del stack no se piden acá: son del Setup (etapa 4).
+
 ## Pasos
 
 1. **Preguntá** (todo junto, en un solo mensaje):

@@ -16,13 +16,20 @@ La metodología, ilustrada: `docs/metodologia.html`. Las reglas completas: `docs
      `/iniciar-proyecto` la desconecta de la plantilla y arranca el historial de cero. El repo
      remoto del proyecto se crea y se conecta más adelante, en el Setup.
    - En GitHub, "Use this template" para crear el repo del proyecto, y clonar ese.
-2. **Abrí Claude Code** en la carpeta y corré:
+2. **Verificá lo mínimo** para que los comandos funcionen:
+   - `git --version` responde. Si no, instalá git desde https://git-scm.com.
+   - `claude --version` responde. Si no, instalá Claude Code desde https://claude.com/claude-code.
+   - Claude Code tiene la sesión iniciada con la cuenta de claude.ai donde van a vivir los
+     artifacts del proyecto.
+
+   `/iniciar-proyecto` vuelve a comprobarlo y se detiene si algo falta.
+3. **Abrí Claude Code** en la carpeta y corré:
    ```
    /iniciar-proyecto
    ```
    Te pregunta el nombre y quién cumple cada rol, crea el artifact del proyecto y guarda su
    enlace en `CLAUDE.md`.
-3. **Escribí el funcional** en el artifact (Definición → 1. Funcional), solo o conversando con
+4. **Escribí el funcional** en el artifact (Definición → 1. Funcional), solo o conversando con
    Claude Code. Cuando esté listo para revisar: `/etapa`.
 
 ## Las seis etapas
