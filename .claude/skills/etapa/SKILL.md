@@ -33,7 +33,7 @@ Trabajá el contenido con el usuario y, cuando diga que está listo, ponela en r
   herramienta de pruebas en 5 navegadores. En `etapas/arquitectura.md` va un resumen en
   lenguaje llano, para que el OO pueda aprobar sin ser técnico.
 - **4. Setup.** Se hace con el stack aprobado en la arquitectura y se registra en `docs/setup.md`.
-  Recorré la lista de comprobación con el usuario: conectar el repo remoto y subir las tres
+  Recorré la lista de comprobación con el usuario: conectar el repo remoto del proyecto (nunca el de la plantilla) y subir las tres
   ramas, proteger `main`, instalar dependencias, dejar las pruebas corriendo en 5 navegadores
   y publicar una página mínima en desarrollo, testing y producción, con prueba de humo y vuelta
   atrás probadas. Marcá un punto solo cuando lo comprobaste, con la evidencia al lado; lo que

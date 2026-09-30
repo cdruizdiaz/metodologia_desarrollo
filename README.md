@@ -8,8 +8,14 @@ La metodología, ilustrada: `docs/metodologia.html`. Las reglas completas: `docs
 
 ## Arrancar un proyecto
 
-1. **Creá el repo del proyecto a partir de esta plantilla** (en GitHub: "Use this template")
-   y clonalo.
+1. **Traé la plantilla a una carpeta nueva.** Cualquiera de las dos formas sirve:
+   - Clonarla directo:
+     ```
+     git clone https://github.com/cdruizdiaz/metodologia_desarrollo.git mi-proyecto
+     ```
+     `/iniciar-proyecto` la desconecta de la plantilla y arranca el historial de cero. El repo
+     remoto del proyecto se crea y se conecta más adelante, en el Setup.
+   - En GitHub, "Use this template" para crear el repo del proyecto, y clonar ese.
 2. **Abrí Claude Code** en la carpeta y corré:
    ```
    /iniciar-proyecto

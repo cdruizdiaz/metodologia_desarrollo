@@ -15,8 +15,18 @@ que el proyecto ya está iniciado.
    - Una o dos frases sobre qué es.
    - Quién es OO, Analista, QA y Desarrollo. Puede ser la misma persona.
 
-2. **Repo.** Si no es un repositorio git, `git init` con rama `main`. Creá las ramas
-   `develop` y `revision` si no existen y quedate en `develop`.
+2. **Repo.** El proyecto nuevo no puede quedar atado al repo plantilla.
+   - Mirá `git remote get-url origin`. Si apunta a la plantilla
+     (`cdruizdiaz/metodologia_desarrollo`, o el repo del que se clonó y que no es el del
+     proyecto), la carpeta vino de un `git clone` directo: trae el historial de la plantilla
+     y un `git push` iría contra ella. Avisale al usuario y, con su confirmación, borrá la
+     carpeta `.git` y empezá de cero con `git init -b main`. No queda ningún remoto: el del
+     proyecto se conecta en la etapa 4 (Setup).
+   - Si `origin` ya es el repo del proyecto (creado con "Use this template"), dejalo como está.
+   - Si no es un repositorio git, `git init -b main`.
+   - Si no sabés si el remoto es la plantilla o el proyecto, preguntá.
+
+   Después creá las ramas `develop` y `revision` si no existen y quedate en `develop`.
 
 3. **Página.** En `artifact/proyecto.html` cambiá solo el `<title>` por el nombre del proyecto.
 
