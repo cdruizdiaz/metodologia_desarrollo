@@ -27,6 +27,21 @@ Preparás, registrás y respondés. **Nunca aprobás ni cerrás.**
 5. Mientras hay una entrega `En revisión`, la rama `revision` no se toca.
 6. Ante una Duda, no inventes: preguntá.
 
+## Las etapas que se hacen conversando
+
+Funcional (1), Arquitectura (3), Setup (4) y Plan de fases (5) se trabajan chateando con vos.
+Nadie escribe ese contenido en el artifact: ahí se lee, se observa y se aprueba.
+
+- **En cada avance** de la conversación, escribí el documento en `docs/` y, en el mismo
+  momento, la sección del artifact (`etapas/<id>.md` y `actualizado`). No esperes a `/etapa`:
+  el artifact muestra siempre cómo va quedando.
+- Funcional: va completo. Arquitectura y Plan: el documento resumen, en lenguaje llano.
+- Setup: al aprobarse la arquitectura generás solo el prompt que revisa e instala todo lo
+  necesario, y lo dejás en la sección. Debajo va la lista de comprobación con la evidencia.
+- El Plan no se congela al aprobarse: lo mantenés al día cada vez que cambia, con su registro
+  de cambios, y anotás cada fase cumplida (en qué entrega se aprobó, en qué salida fue a producción).
+- Lo mismo con el funcional: cada decisión lo cambia en el repo y en el artifact.
+
 ## Dónde está cada cosa
 
 | Qué | Dónde |

@@ -19,5 +19,5 @@ Solo lee. No cambia nada.
    - **Qué espera a Desarrollo**: observaciones abiertas (primero las que Bloquean), cierre ya marcado sin procesar.
    - **Próximo paso**: uno solo, con el comando que corresponde.
 
-Si el repo y el artifact no coinciden (por ejemplo, `CLAUDE.md` dice etapa 2 y el artifact 3),
-decilo como primera línea.
+Si el repo y el artifact no coinciden (por ejemplo, `CLAUDE.md` dice etapa 2 y el artifact 3,
+o un documento de `docs/` dice algo distinto de su sección en Definición), decilo como primera línea.

@@ -4,6 +4,10 @@
 lo lee de la base de datos del artifact. Claude Code escribe el contenido con la herramienta
 `ArtifactData`; las personas marcan casillas en la página.
 
+El texto de las etapas Funcional, Arquitectura, Setup y Plan de fases no se edita en la página:
+se trabaja conversando con Claude Code, que lo escribe acá en cada avance. El Markdown se
+muestra como texto enriquecido (títulos, tablas, listas y diagramas `mermaid`).
+
 ## Quién escribe qué
 
 | Colección | La escribe | Para qué |
@@ -37,11 +41,27 @@ Para escribir varios documentos, usar `batch`.
 `<id>` es `funcional`, `pantallas`, `arquitectura`, `setup`, `plan` o `modelo`.
 ```json
 { "titulo": "1. Funcional", "version": "0.1", "estado": "Borrador",
-  "ronda": 1, "editable": true, "md": "…", "aprueba": "Desarrollo" }
+  "ronda": 1, "actualizado": "30 sep", "md": "…" }
 ```
 - `estado`: `Borrador` → `En revisión` → `Aprobada`. `modelo` no lleva estado.
-- `aprueba`: solo en `setup`. Indica que la etapa la aprueba Desarrollo y no el OO; la página lo avisa.
-- `editable: true` muestra el botón "Editar el texto" en la página (se usa en el funcional).
+- `md`: lo que la sección muestra. Se reescribe en cada avance de la conversación, no solo al
+  pedir la revisión, y también después de Aprobada cuando el contenido cambia (una decisión
+  en el funcional, un cambio en el plan). Qué lleva en cada etapa:
+  - `funcional`: el funcional completo, igual a `docs/funcional.md`.
+  - `arquitectura`: el documento resumen de `docs/arquitectura.md`, en lenguaje llano.
+  - `setup`: la lista de comprobación con su evidencia.
+  - `plan`: el documento resumen de `docs/plan-de-fases.md`.
+- `actualizado`: fecha corta de la última vez que se escribió `md`. La página la muestra como "al día al…".
+- `version`: sube cada vez que la etapa se pone En revisión y, ya Aprobada, con cada cambio.
+
+Campos propios de una etapa:
+
+- `setup.aprueba: "Desarrollo"`: la etapa la aprueba Desarrollo y no el OO; la página lo avisa.
+- `setup.prompt`: texto plano con el prompt para Claude Code que revisa e instala todo lo que
+  el proyecto necesita. Claude Code lo genera solo a partir de la arquitectura aprobada. La
+  página lo muestra arriba de la lista, con un botón para copiarlo.
+- `plan.cambios`: Markdown con el registro de cambios al plan después de aprobado: fecha, qué
+  cambió y qué lo respalda (el destino que el OO dio a un pedido, o una `DEC-NN`).
 - `ronda`: número de vuelta de revisión. Las marcas de la etapa se guardan por ronda; si el OO
   devuelve con observaciones, al volver a poner En revisión se suma 1 y las casillas salen limpias.
 
@@ -54,8 +74,10 @@ Para escribir varios documentos, usar `batch`.
   guardada en el artifact. Se baja al repo al aprobarse la etapa.
 
 ### `fases/<F01>`
-`{ "nombre": "…", "criterio": "…", "estado": "Planificada" }`
+`{ "nombre": "…", "criterio": "…", "estado": "Planificada", "aprobadaEn": "E-03", "salida": "prod-2026-10-15" }`
 Estados: `Planificada` → `En construcción` → `En revisión` → `Aprobada` → `En producción`.
+`aprobadaEn` se escribe al pasar a `Aprobada` (la entrega cuyo cierre la respalda) y `salida`
+al pasar a `En producción`. Con esto la sección del Plan muestra las fases cumplidas.
 
 ### `entregas/<E-01>`
 ```json

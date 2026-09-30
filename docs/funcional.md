@@ -1,6 +1,8 @@
 # Funcional — (nombre del proyecto)
 
 > Etapa 1. Dice **qué hace** el producto, no cómo se construye.
+> Se define conversando con Claude Code, que en cada avance escribe este archivo y la sección
+> del artifact, donde se muestra completo.
 > Después de aprobado, cambia solo por decisiones (`DEC-NN`).
 
 ## 1. Para qué es

@@ -1,12 +1,13 @@
 # Arquitectura — (nombre del proyecto)
 
-> Etapa 3. La escribe Desarrollo con Claude Code. El OO aprueba el resumen llano que se
-> publica en el artifact.
+> Etapa 3. Se define conversando: Desarrollo con Claude Code. En cada avance Claude Code
+> escribe este archivo y publica el documento resumen en el artifact, que es lo que aprueba el OO.
+> Al aprobarse, de acá sale el prompt de Setup.
 
-## Resumen llano
+## Documento resumen
 
-(Cinco líneas que entienda alguien no técnico: con qué se construye, dónde corre, qué cuesta
-y qué riesgos se probaron.)
+(Lo que se publica en el artifact, para alguien no técnico: con qué se construye, dónde corre,
+qué cuesta, qué riesgos se probaron y qué queda decidido. Va tomando forma con la conversación.)
 
 ## Stack
 

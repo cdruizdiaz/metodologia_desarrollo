@@ -7,9 +7,24 @@
 
 Una página mínima recorre los tres ambientes: desarrollo → testing → producción.
 
+## Prompt para Claude Code
+
+Lo genera Claude Code solo, al aprobarse la arquitectura, y lo publica en la sección Setup del
+artifact con un botón para copiarlo. Se pega en Claude Code, abierto en la carpeta del proyecto.
+Sirve para el Setup y para cada máquina nueva. Si la arquitectura cambia, se regenera.
+
+```
+(Todavía sin generar. Tiene que decir, con el stack aprobado: qué herramientas y versiones
+comprobar, qué instalar si falta, qué dependencias, qué variables de entorno, cómo dejar las
+pruebas corriendo en 5 navegadores y cómo publicar en los tres ambientes. Comprueba primero e
+instala solo lo que falta; pide lo que necesita una cuenta o un permiso; no contiene secretos;
+termina informando la lista de comprobación con su evidencia.)
+```
+
 ## Lista de comprobación
 
-Cada punto se marca cuando se comprobó, con la evidencia al lado (un comando, una dirección, un commit).
+Es el resultado de correr el prompt. Cada punto se marca cuando se comprobó, con la evidencia
+al lado (un comando, una dirección, un commit). Se publica en el artifact debajo del prompt.
 
 | Hecho | Qué | Evidencia |
 |---|---|---|

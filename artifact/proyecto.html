@@ -62,7 +62,7 @@ label.box input{width:17px; height:17px; accent-color:var(--ok);}
 label.box.x input{accent-color:var(--oo);}
 textarea, input[type="text"], select{font:inherit; color:var(--fg); background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:7px 9px; width:100%; max-width:100%;}
 textarea{min-height:64px; resize:vertical;}
-textarea.largo{min-height:420px; font:13px/1.5 var(--mono);}
+pre.prompt{margin:0; max-height:420px; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; background:var(--soft); border:1px solid var(--line); border-radius:8px; padding:10px 12px; font:12.5px/1.5 var(--mono); user-select:all;}
 select{width:auto;}
 .caps{display:flex; flex-wrap:wrap; gap:8px;}
 .caps img{width:96px; height:96px; object-fit:cover; border-radius:8px; border:1px solid var(--line);}
@@ -120,8 +120,10 @@ details>.stack{padding:0 14px 14px; gap:8px;}
 var ETAPAS=[["funcional","1. Funcional"],["pantallas","2. Pantallas"],["arquitectura","3. Arquitectura"],["setup","4. Setup"],["plan","5. Plan de fases"],["modelo","Modelo de datos"]];
 var NOMBRE_ETAPA=["","Funcional","Pantallas","Arquitectura","Setup","Plan de fases","Construcción"];
 var HUMANOS={"Aprobada":1,"Cerrada":1,"Aceptada":1};
+/* Etapas que se trabajan conversando con Claude Code: la página las muestra, no las edita. */
+var CHAT={funcional:1,arquitectura:1,setup:1,plan:1};
 var S={info:null,probar:null,etapas:[],fases:[],entregas:[],obs:[],dec:[],backlog:[],pantallas:[],salidas:[],
-  marcas:{},subs:{},abiertos:{},tab:"inicio",sub:"funcional",hist:null,filtro:"",pantSel:null,editando:null,borrador:"",
+  marcas:{},subs:{},abiertos:{},tab:"inicio",sub:"funcional",hist:null,filtro:"",pantSel:null,
   puede:true,uid:null,db:null,assets:null,listo:false,sucio:false};
 var vista=document.getElementById("vista"), tabsEl=document.getElementById("tabs"), avisoEl=document.getElementById("aviso");
 
@@ -325,6 +327,17 @@ function vEntrega(e,soloLectura){
 }
 
 /* ---------- vistas ---------- */
+function tablaFases(detalle){
+  return h("div",{class:"tbl"},h("table",null,
+    h("tr",null,h("th",{text:"Fase"}),h("th",{text:"Criterio de fin"}),h("th",{text:"Estado"}),detalle&&h("th",{text:"Se aprobó en"}),detalle&&h("th",{text:"Salió en"})),
+    S.fases.map(function(f){return h("tr",null,h("td",null,h("b",{text:f.id})," ",f.nombre||""),h("td",{text:f.criterio||""}),h("td",null,chip(f.estado)),
+      detalle&&h("td",{text:f.aprobadaEn||"—"}),detalle&&h("td",null,f.salida?h("code",{text:f.salida}):"—"));})));
+}
+function copiarPrompt(ev){
+  var b=ev.currentTarget, e=porId(S.etapas,"setup");
+  function no(){ aviso("No se pudo copiar solo. Tocá el texto del prompt para seleccionarlo y copialo con Ctrl+C."); }
+  try{ navigator.clipboard.writeText(e.prompt).then(function(){ aviso(""); b.textContent="Copiado"; },no); }catch(_){ no(); }
+}
 function vInicio(){
   var i=S.info;
   if(!i) return h("div",{class:"card stack"},h("h2",{text:"Este proyecto todavía no tiene datos"}),
@@ -347,10 +360,8 @@ function vInicio(){
         h("tr",null,h("th",{text:"revisión"}),h("td",{text:amb.revision||"—"})),
         h("tr",null,h("th",{text:"producción"}),h("td",{text:amb.produccion||"—"}))))),
     h("div",{class:"card stack",style:"gap:6px"},h("h3",{text:"Fases"}),
-      S.fases.length?h("div",{class:"tbl"},h("table",null,
-        h("tr",null,h("th",{text:"Fase"}),h("th",{text:"Criterio de fin"}),h("th",{text:"Estado"})),
-        S.fases.map(function(f){return h("tr",null,h("td",null,h("b",{text:f.id})," ",f.nombre||""),h("td",{text:f.criterio||""}),h("td",null,chip(f.estado)));}))):
-        vacio("Las fases aparecen cuando se aprueba el plan (etapa 5).")),
+      S.fases.length?tablaFases(false):
+        vacio("Las fases aparecen cuando se aprueba el plan (etapa 5). Desde ahí, acá se ve cuáles están cumplidas.")),
     h("div",{class:"card stack",style:"gap:6px"},h("h3",{text:"Quién hace qué"}),
       h("p",{class:"mut"},"OO: "+(roles.oo||"—")+" · Analista: "+(roles.analista||"—")+" · QA: "+(roles.qa||"—")+" · Desarrollo: "+(roles.desarrollo||"—")),
       h("p",{class:"mut",text:"Las casillas las marcan las personas. Claude Code prepara y registra, pero nunca aprueba ni cierra."})));
@@ -359,22 +370,24 @@ function vEtapa(id){
   var e=porId(S.etapas,id);
   if(!e) return vacio("Esta parte todavía no empezó.");
   var owner="etapa-"+id+"-r"+(e.ronda||1), enRev=e.estado==="En revisión", lock=!enRev||!S.puede;
-  var cab=h("div",{class:"row"},h("h2",{text:e.titulo||id}),e.estado&&chip(e.estado),e.version&&h("span",{class:"mut",text:"versión "+e.version}));
-  var cuerpo;
-  if(S.editando===id){
-    cuerpo=h("div",{class:"stack",style:"gap:8px"},
-      h("textarea",{class:"largo",id:"editor","aria-label":"Texto de "+(e.titulo||id),value:S.borrador,oninput:function(ev){S.borrador=ev.target.value;}}),
-      h("div",{class:"row"},
-        h("button",{class:"btn go",type:"button",onclick:function(){
-          var t=S.borrador; S.editando=null;
-          cola("etapas/"+id,function(ref){return ref.update({md:t,editadoPor:S.uid||null,editado:new Date().toISOString()});}); pedir();
-        }},"Guardar"),
-        h("button",{class:"btn",type:"button",onclick:function(){S.editando=null;pedir();}},"Cancelar"),
-        h("span",{class:"mut",text:"Se escribe en Markdown."})));
-  } else {
-    cuerpo=h("div",{class:"stack",style:"gap:10px"},
-      e.md?md(e.md):vacio("Todavía sin contenido."),
-      e.editable&&S.puede&&e.estado!=="Aprobada"&&h("div",null,h("button",{class:"btn",type:"button",onclick:function(){S.editando=id;S.borrador=e.md||"";pedir();}},"Editar el texto")));
+  var cab=h("div",{class:"row"},h("h2",{text:e.titulo||id}),e.estado&&chip(e.estado),e.version&&h("span",{class:"mut",text:"versión "+e.version}),e.actualizado&&h("span",{class:"mut",text:"al día al "+e.actualizado}));
+  var nota=CHAT[id]&&e.estado==="Borrador"?h("p",{class:"mut",text:"Se va armando en la conversación con Claude Code. Acá se ve cómo va quedando."}):null;
+  var cuerpo=e.md?md(e.md):vacio("Todavía sin contenido.");
+  var prompt=null, avance=null, cambios=null;
+  if(id==="setup"&&e.prompt){
+    prompt=h("div",{class:"card stack",style:"gap:8px"},h("h3",{text:"Prompt para Claude Code"}),
+      h("p",{class:"mut",text:"Revisa e instala todo lo que el proyecto necesita. Copialo y pegalo en Claude Code, abierto en la carpeta del proyecto. Sirve también para cada máquina nueva."}),
+      h("pre",{class:"prompt",tabindex:"0","aria-label":"Prompt de Setup",text:e.prompt}),
+      h("div",null,h("button",{class:"btn go",type:"button",onclick:copiarPrompt},"Copiar el prompt")));
+  }
+  if(id==="plan"){
+    if(S.fases.length){
+      var hechas=S.fases.filter(function(f){return f.estado==="Aprobada"||f.estado==="En producción";}).length;
+      avance=h("div",{class:"card stack",style:"gap:8px"},h("h3",{text:"Avance del plan"}),
+        h("p",{class:"mut",text:hechas+" de "+S.fases.length+" fases cumplidas. Una fase se cumple cuando queda Aprobada al cerrar una entrega."}),
+        tablaFases(true));
+    }
+    if(e.cambios) cambios=h("div",{class:"card stack",style:"gap:8px"},h("h3",{text:"Cambios al plan"}),md(e.cambios));
   }
   var pant=null;
   if(id==="pantallas"){
@@ -415,11 +428,11 @@ function vEtapa(id){
         casilla(owner+"-obs","Devuelvo con observaciones",c.decision==="observaciones",lock,function(){guardar(owner,"cierre",{decision:c.decision==="observaciones"?null:"observaciones"});},"x")),
       c.decision&&enRev&&h("p",{class:"aviso",text:"Revisión registrada. Avisale a Desarrollo: en Claude Code se corre /etapa."}));
   }
-  return h("div",{class:"stack"},cab,h("div",{class:"card"},cuerpo),pant,rev);
+  return h("div",{class:"stack"},cab,nota,prompt,h("div",{class:"card"},cuerpo),avance,cambios,pant,rev);
 }
 function vDefinicion(){
   return h("div",{class:"stack"},
-    h("div",{class:"subbar"},ETAPAS.map(function(x){return h("button",{type:"button","aria-pressed":String(S.sub===x[0]),onclick:function(){S.sub=x[0];S.editando=null;pedir();}},x[1]);})),
+    h("div",{class:"subbar"},ETAPAS.map(function(x){return h("button",{type:"button","aria-pressed":String(S.sub===x[0]),onclick:function(){S.sub=x[0];pedir();}},x[1]);})),
     vEtapa(S.sub));
 }
 function plegable(key,resumen,cuerpo){
@@ -482,7 +495,7 @@ function vHistorial(){
 }
 
 /* ---------- pintar ---------- */
-function ir(t){ S.tab=t; S.editando=null; try{localStorage.setItem("tab",t);}catch(_){ } pintar(); window.scrollTo(0,0); }
+function ir(t){ S.tab=t; try{localStorage.setItem("tab",t);}catch(_){ } pintar(); window.scrollTo(0,0); }
 function pintar(){
   var e=abierta(), abiertasObs=S.obs.filter(function(o){return o.estado==="Abierta";}).length;
   var list=[["inicio","Inicio"]];

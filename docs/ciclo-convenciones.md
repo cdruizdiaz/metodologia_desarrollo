@@ -16,18 +16,46 @@ Cada etapa arranca cuando se aprueba la anterior. Las aprueba el OO, salvo el Se
 
 | Etapa | Qué produce | Quién | Dónde se escribe |
 |---|---|---|---|
-| 1. Funcional | Qué hace: reglas, pantallas y mensajes | Analista | En el artifact; aprobado, se copia a `docs/funcional.md` |
+| 1. Funcional | Qué hace: reglas, pantallas y mensajes | Analista + Claude Code | `docs/funcional.md`; en el artifact, el funcional completo |
 | 2. Pantallas | Una imagen por pantalla, con código (`P01`, `C3`…) | Analista u OO | Se pegan o se eligen en el artifact; aprobada la etapa, se copian a `docs/pantallas/` |
-| 3. Arquitectura | Stack, estándares y pruebas de lo riesgoso | Desarrollo + Claude Code | `docs/arquitectura.md`; en el artifact, un resumen llano |
-| 4. Setup | El entorno andando: repo remoto, dependencias, pruebas y los tres ambientes | Desarrollo + Claude Code | `docs/setup.md`; en el artifact, la lista de comprobación |
-| 5. Plan de fases | Fases comprobables, cada una con criterio de fin | Desarrollo + Claude Code | `docs/plan-de-fases.md`; en el artifact, el resumen y la tabla |
+| 3. Arquitectura | Stack, estándares y pruebas de lo riesgoso | Desarrollo + Claude Code | `docs/arquitectura.md`; en el artifact, el documento resumen en lenguaje llano |
+| 4. Setup | El entorno andando: repo remoto, dependencias, pruebas y los tres ambientes | Desarrollo + Claude Code | `docs/setup.md`; en el artifact, el prompt para Claude Code y la lista de comprobación |
+| 5. Plan de fases | Fases comprobables, cada una con criterio de fin | Desarrollo + Claude Code | `docs/plan-de-fases.md`; en el artifact, el documento resumen, el avance y los cambios |
 | 6. Construcción | El producto, fase por fase, en entregas | Todos | El código, y una pestaña por entrega |
 
 Las etapas 1 a 5 se hacen una vez. La 6 se repite entrega por entrega.
 
+### Las etapas que se hacen conversando
+
+Funcional, Arquitectura, Setup y Plan de fases se trabajan **chateando con Claude Code**. El
+contenido no se escribe en el artifact: ahí se lee cómo va quedando, se observa y se aprueba.
+(Las Pantallas son la excepción: las imágenes se pegan o se eligen en la página.)
+
+- **El artifact va al día.** En cada avance de la conversación Claude Code escribe el documento
+  en `docs/` y la sección del artifact, sin esperar a que se pida la revisión. La sección dice
+  hasta qué fecha está al día.
+- **Funcional**: en el artifact va completo, como texto enriquecido. Después de aprobado cambia
+  solo por decisiones, y cada decisión lo actualiza en el repo y en el artifact.
+- **Arquitectura**: en el artifact va el documento resumen, para que el OO apruebe sin ser técnico.
+- **Setup**: Claude Code genera solo, a partir de la arquitectura aprobada, el **prompt** que
+  revisa e instala todo lo necesario. Queda en la sección, listo para copiar, y sirve también
+  para cada máquina nueva. Debajo va la lista de comprobación con la evidencia de lo que quedó
+  andando; con eso aprueba Desarrollo. Si la arquitectura cambia, el prompt se regenera.
+- **Plan de fases**: en el artifact va el documento resumen. No se congela al aprobarse (ver
+  "El plan, después de aprobado").
+
 El Setup termina cuando una página mínima recorre los tres ambientes: desarrollo (`develop`)
 → testing (`revision`) → producción (`main`). Sin eso no se puede empezar a construir.
-Después de aprobado, el funcional cambia solo por decisiones.
+
+### El plan, después de aprobado
+
+- **Avance.** Cada fase cumplida queda anotada: en qué entrega se aprobó y en qué salida fue a
+  producción. La sección del Plan lo muestra siempre al día.
+- **Cambios.** Una fase nueva, partida, quitada o cambiada de orden se escribe en el plan en el
+  momento, con una línea en "Cambios al plan": fecha, qué cambió y qué lo respalda.
+- **Qué respalda un cambio.** El destino que el OO le dio a un pedido del backlog al cerrar una
+  entrega, o una decisión (`DEC-NN`) que se valida en la entrega siguiente. El plan no vuelve a
+  revisión: no se reaprueba la etapa entera.
 
 ## Fase y entrega
 
@@ -137,6 +165,7 @@ le da destino: una fase existente, una fase nueva o descartado.
 - El artifact es uno solo por proyecto, desde el primer día. Es la cara para las personas.
 - El repo guarda lo técnico y un espejo del artifact en `docs/estado/`, que se actualiza al
   cerrar cada entrega y cada etapa.
+- Los documentos de `docs/` y las secciones de Definición dicen lo mismo: se escriben juntos.
 - Pestañas: Inicio · entrega abierta · Definición · Observaciones · Decisiones · Backlog · Cómo probar · Historial.
 
 ## Reglas que no se negocian

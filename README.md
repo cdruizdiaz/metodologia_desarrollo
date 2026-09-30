@@ -29,14 +29,20 @@ La metodología, ilustrada: `docs/metodologia.html`. Las reglas completas: `docs
    ```
    Te pregunta el nombre y quién cumple cada rol, crea el artifact del proyecto y guarda su
    enlace en `CLAUDE.md`.
-4. **Escribí el funcional** en el artifact (Definición → 1. Funcional), solo o conversando con
-   Claude Code. Cuando esté listo para revisar: `/etapa`.
+4. **Definí el funcional conversando con Claude Code.** En cada avance lo deja escrito en el
+   artifact (Definición → 1. Funcional), donde se ve cómo va quedando. Cuando esté listo para
+   revisar: `/etapa`.
 
 ## Las seis etapas
 
 1. Funcional · 2. Pantallas · 3. Arquitectura · 4. Setup · 5. Plan de fases · 6. Construcción
 
-En el Setup (etapa 4) se conecta el repo remoto, se instalan las dependencias y se dejan
+Funcional, Arquitectura, Setup y Plan de fases se hacen chateando con Claude Code, que va
+dejando el resultado en la sección de cada uno en el artifact. El Plan se mantiene al día
+durante toda la construcción: muestra las fases cumplidas y cada cambio.
+
+En el Setup (etapa 4) Claude Code genera el prompt que revisa e instala todo lo necesario.
+Con él se conecta el repo remoto, se instalan las dependencias y se dejan
 andando los tres ambientes: desarrollo (`develop`), testing (`revision`) y producción (`main`).
 Ahí también se protege la rama `main` (en GitHub: Settings → Branches → Add rule), que es el
 refuerzo de la regla "solo fases Aprobadas llegan a producción".
@@ -47,7 +53,7 @@ refuerzo de la regla "solo fases Aprobadas llegan a producción".
 |---|---|---|
 | `/iniciar-proyecto` | Crea el artifact y deja el repo listo para la etapa 1 | Una vez, después de clonar |
 | `/estado` | Resume etapa, entrega abierta, observaciones y próximo paso | Al empezar cada sesión |
-| `/etapa` | Pone en revisión la etapa en curso (1 a 5) o procesa su revisión | Durante la definición |
+| `/etapa` | Pone en revisión la etapa en curso (1 a 5) o procesa su revisión. El contenido se arma antes, conversando | Durante la definición |
 | `/pasar-a-testing` | Publica en revisión y arma la pestaña `E-NN` | Cuando `develop` está listo para probar |
 | `/procesar-entrega` | Lee las casillas, numera las observaciones y actualiza estados | Después de que el OO cierra |
 | `/pasar-a-produccion` | Merge a `main`, tag y prueba de humo, con tu confirmación | Con fases Aprobadas |
@@ -67,8 +73,8 @@ docs/guia-comandos.html      Cuándo y cómo se usa cada comando
 docs/funcional.md            Etapa 1 (plantilla)
 docs/pantallas/              Etapa 2: un PNG por pantalla
 docs/arquitectura.md         Etapa 3 (plantilla)
-docs/setup.md                Etapa 4 (lista de comprobación)
-docs/plan-de-fases.md        Etapa 5 (plantilla)
+docs/setup.md                Etapa 4 (prompt para Claude Code y lista de comprobación)
+docs/plan-de-fases.md        Etapa 5 (plantilla); se mantiene al día en la etapa 6
 docs/modelo-de-datos.md      Diagrama entidad-relación
 docs/estado/                 Espejo del artifact, se actualiza al cerrar cada entrega
 docs/avances/                Diario: un archivo por día

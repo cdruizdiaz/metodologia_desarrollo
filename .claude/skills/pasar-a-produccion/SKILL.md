@@ -32,7 +32,8 @@ Nunca se corre por iniciativa propia. Solo cuando el usuario lo pide.
    - Avisale al usuario. Las fases siguen `Aprobada`, no `En producción`.
 
 6. **Si pasa**:
-   - Fases → `En producción`.
+   - Fases → `En producción`, con `salida: "<tag>"`. Anotalo también en la tabla de
+     `docs/plan-de-fases.md` (Estado y "Salió en").
    - `salidas/<tag>` con fecha y fases.
    - `proyecto/info.ambientes.produccion`.
    - Espejo (`fases`, `salidas`, `proyecto`, `observaciones` con `out_dir: "docs/estado"`), diario y commit en `develop`.

@@ -54,10 +54,10 @@ El repo remoto, `gh` y las dependencias del stack no se piden acá: son del Setu
 
 5. **Cargá los datos iniciales** con `ArtifactData`, acción `batch` (formas en `artifact/datos.md`):
    - `proyecto/info`: nombre, `etapa: 1`, roles, ambientes vacíos y
-     `proximoPaso: "El Analista escribe el funcional en Definición → 1. Funcional."`
+     `proximoPaso: "El Analista define el funcional conversando con Claude Code. En Definición → 1. Funcional se ve cómo va quedando."`
    - `etapas/funcional`: `titulo: "1. Funcional"`, `version: "0.1"`, `estado: "Borrador"`,
-     `ronda: 1`, `editable: true`, y en `md` el contenido de `docs/funcional.md`
-     con el nombre y la descripción ya puestos.
+     `ronda: 1`, `actualizado` con la fecha de hoy, y en `md` el contenido de `docs/funcional.md`
+     con el nombre y la descripción ya puestos (guardá ese mismo texto en el archivo).
 
 6. **Completá el bloque "Proyecto"** de `CLAUDE.md`: nombre, URL del artifact, `Etapa actual: 1`, roles.
 
@@ -68,7 +68,7 @@ El repo remoto, `gh` y las dependencias del stack no se piden acá: son del Setu
 9. **Contale al usuario**:
    - El enlace del artifact. Es privado: para que otros lo usen hay que compartirlo desde
      el menú Share, como Contributor para que puedan marcar casillas.
-   - Próximo paso: escribir el funcional, en el artifact con "Editar el texto" o conversando
-     con vos. Cuando esté listo para revisar, `/etapa`.
+   - Próximo paso: definir el funcional conversando con vos. En cada avance lo dejás escrito
+     en el artifact, donde se ve cómo va quedando. Cuando esté listo para revisar, `/etapa`.
    - El repo remoto, la protección de `main` y las dependencias se resuelven en la etapa 4 (Setup),
      cuando ya esté elegido el stack.

@@ -50,13 +50,23 @@ Un Cambio genera además una `DEC-NN` en `A validar`.
 ## 5. Backlog
 
 Cada marca `backlog-<id>` con destino: escribí el destino en el pedido y pasalo a `Asignado`
-(o `Descartado`). Si el destino es "Fase nueva", agregala a `docs/plan-de-fases.md` y a `fases`.
-A los pedidos que llegaron con id automático, dales número `B-NN`.
+(o `Descartado`). A los pedidos que llegaron con id automático, dales número `B-NN`.
+
+Un destino que cambia el plan se lleva al plan en esta misma pasada:
+
+- "Fase nueva": agregala a `docs/plan-de-fases.md` y a `fases`, en `Planificada`.
+- Una fase existente: sumá el pedido a lo que incluye esa fase.
+- En los dos casos, una línea en "Cambios al plan" (fecha, qué cambió, y que lo respalda el
+  destino que dio el OO en esta entrega), y actualizá `etapas/plan`: `md`, `cambios`,
+  `actualizado` y la versión.
 
 ## 6. Fases
 
 Una fase de la entrega pasa a `Aprobada` si no le quedan observaciones `Abierta` ni pasos
 "No probado". Si no, sigue `En revisión`.
+
+Cada fase que queda `Aprobada` se anota como cumplida: `aprobadaEn: "<E-NN>"` en `fases/<id>`,
+y su fila en la tabla de `docs/plan-de-fases.md` (Estado y "Se aprobó en").
 
 ## 7. Cierre
 

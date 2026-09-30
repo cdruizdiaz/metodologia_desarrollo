@@ -135,16 +135,16 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
       <p class="lede" style="margin-top:6px;font-size:14px">El repo remoto y las dependencias del stack no van acá: se resuelven en la etapa 4 (Setup).</p></div></div>
     <div class="srow"><h3>3 · Iniciar</h3><div><p>En Claude Code, abierto en la carpeta, se corre <code>/iniciar-proyecto</code>. Vuelve a comprobar lo mínimo y se detiene si algo falta. Desconecta la carpeta del repo plantilla y arranca su historial de cero, pregunta el nombre y quién cumple cada rol, crea el artifact del proyecto y guarda su enlace en el repo.</p>
       <p class="lede" style="margin-top:6px;font-size:14px">El repo remoto propio del proyecto se crea y se conecta más adelante, en la etapa 4 (Setup).</p></div></div>
-    <div class="srow"><h3>4 · Funcional</h3><div><p>El artifact nace con Inicio y Definición, abierto en la etapa 1. El Analista escribe el funcional ahí, con ayuda de Claude Code, y el OO lo aprueba con una casilla.</p></div></div>
+    <div class="srow"><h3>4 · Funcional</h3><div><p>El artifact nace con Inicio y Definición, abierto en la etapa 1. El Analista define el funcional conversando con Claude Code, que en cada avance lo deja escrito en el artifact. Ahí se ve cómo va quedando, y el OO lo aprueba con una casilla.</p></div></div>
   </div>
 </section>
 
 <section>
   <h2>Las seis etapas</h2>
-  <p class="lede">Cada etapa arranca cuando se aprueba la anterior. Lo que se decide durante la construcción vuelve al funcional.</p>
+  <p class="lede">Cada etapa arranca cuando se aprueba la anterior. Funcional, Arquitectura, Setup y Plan de fases se hacen conversando con Claude Code, y el artifact muestra cómo va quedando cada uno. Lo que se decide durante la construcción vuelve al funcional.</p>
   <figure>
     <div class="scroll">
-    <svg viewBox="0 0 960 256" role="img" aria-label="Seis etapas en secuencia: funcional, pantallas, arquitectura, setup, plan de fases y construcción; el OO aprueba cada paso salvo el setup, que lo aprueba Desarrollo, y las decisiones vuelven al funcional.">
+    <svg viewBox="0 0 960 256" role="img" aria-label="Seis etapas en secuencia: funcional, pantallas, arquitectura, setup, plan de fases y construcción; funcional, arquitectura, setup y plan se hacen conversando con Claude Code; el OO aprueba cada paso salvo el setup, que lo aprueba Desarrollo, y las decisiones vuelven al funcional.">
       <defs>
         <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
         <marker id="a1m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
@@ -153,7 +153,7 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
         <rect class="bx" x="16" y="52" width="140" height="124" rx="10"/>
         <text class="m" x="30" y="76">1</text><text class="t" x="44" y="77">Funcional</text>
         <text class="s" x="30" y="100">qué hace: reglas,</text><text class="s" x="30" y="116">pantallas y mensajes</text>
-        <circle class="c-o" cx="34" cy="155" r="5"/><text class="lbl" x="45" y="159">Analista</text>
+        <circle class="c-o" cx="34" cy="155" r="5"/><circle class="c-k" cx="46" cy="155" r="5"/><text class="lbl" x="57" y="159">Analista + CC</text>
       </g>
       <g>
         <rect class="bx" x="174" y="52" width="140" height="124" rx="10"/>
@@ -170,13 +170,13 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
       <g>
         <rect class="bx" style="stroke:var(--dev)" x="490" y="52" width="140" height="124" rx="10"/>
         <text class="m" x="504" y="76">4</text><text class="t" x="518" y="77">Setup</text>
-        <text class="s" x="504" y="100">repo, dependencias</text><text class="s" x="504" y="116">y tres ambientes</text>
+        <text class="s" x="504" y="100">un prompt instala</text><text class="s" x="504" y="116">y deja 3 ambientes</text>
         <circle class="c-d" cx="508" cy="155" r="5"/><circle class="c-k" cx="520" cy="155" r="5"/><text class="lbl" x="531" y="159">Desarrollo + CC</text>
       </g>
       <g>
         <rect class="bx" x="648" y="52" width="140" height="124" rx="10"/>
         <text class="m" x="662" y="76">5</text><text class="t" x="676" y="77">Plan de fases</text>
-        <text class="s" x="662" y="100">fases comprobables,</text><text class="s" x="662" y="116">con criterio de fin</text>
+        <text class="s" x="662" y="100">fases comprobables;</text><text class="s" x="662" y="116">sigue al día en la 6</text>
         <circle class="c-d" cx="666" cy="155" r="5"/><circle class="c-k" cx="678" cy="155" r="5"/><text class="lbl" x="689" y="159">Desarrollo + CC</text>
       </g>
       <g>
@@ -201,7 +201,7 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
       <text class="s" x="476" y="236" text-anchor="middle">Decisiones (<tspan style="font-family:var(--mono)">DEC-NN</tspan>) y pedidos del backlog vuelven al funcional, en el mismo commit que el cambio</text>
     </svg>
     </div>
-    <figcaption>Las etapas 1 a 5 se hacen una vez, al empezar, y cada una suma su parte al artifact. La 6 se repite entrega por entrega. El Setup es la única etapa que aprueba Desarrollo: termina cuando una página mínima recorre desarrollo, testing y producción, y sin eso no se empieza a construir. Un pedido nuevo no entra en la fase en curso: va al backlog y el OO le da destino al cerrar la entrega.</figcaption>
+    <figcaption>Las etapas 1 a 5 se hacen una vez, al empezar, y cada una suma su parte al artifact. La 6 se repite entrega por entrega. Las etapas 1, 3, 4 y 5 se trabajan chateando con Claude Code: en cada avance de la conversación actualiza la sección del artifact, sin esperar a que se pida la revisión. El Setup es la única etapa que aprueba Desarrollo: termina cuando una página mínima recorre desarrollo, testing y producción, y sin eso no se empieza a construir. El Plan de fases no se congela al aprobarse: se mantiene al día durante toda la construcción. Un pedido nuevo no entra en la fase en curso: va al backlog y el OO le da destino al cerrar la entrega.</figcaption>
   </figure>
 </section>
 
@@ -323,13 +323,23 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
 </section>
 
 <section>
+  <h2>El plan, después de aprobado</h2>
+  <p class="lede">El plan de fases sigue vivo durante toda la construcción. Claude Code lo mantiene al día en el repo y en el artifact.</p>
+  <div class="states">
+    <div class="srow"><h3>Avance</h3><div><p>Cada fase cumplida queda anotada: en qué entrega se aprobó y, cuando sale, en qué salida fue a producción. La sección del Plan muestra cuántas fases van cumplidas del total.</p></div></div>
+    <div class="srow"><h3>Cambios</h3><div><p>Una fase nueva, partida, quitada o cambiada de orden se escribe en el plan en el momento, con una línea en “Cambios al plan”: fecha, qué cambió y qué lo respalda.</p></div></div>
+    <div class="srow"><h3>Respaldo</h3><div><p>Un cambio no reaprueba la etapa entera. Lo respalda el destino que el OO le dio a un pedido del backlog al cerrar una entrega, o una decisión (<code>DEC-NN</code>) que se valida en la entrega siguiente. Una fase ya Aprobada no se cambia: lo nuevo va a otra fase.</p></div></div>
+  </div>
+</section>
+
+<section>
   <h2>Estados</h2>
   <p class="lede">En rosa, los pasos que solo da una persona. Claude Code mueve todo lo demás.</p>
   <div class="states">
     <div class="srow">
       <h3>Etapa 1 a 5</h3>
       <div class="chain"><span class="chip">Borrador</span><span class="arr">→</span><span class="chip">En revisión</span><span class="arr">→</span><span class="chip h">Aprobada</span></div>
-      <p class="note">Con las mismas casillas Apruebo / Observo que una entrega.</p>
+      <p class="note">Con las mismas casillas Apruebo / Observo que una entrega. En Borrador, el artifact ya muestra cómo va quedando. Aprobada no quiere decir congelada: el funcional cambia por decisiones y el plan se mantiene al día.</p>
     </div>
     <div class="srow">
       <h3>Fase</h3>
@@ -361,11 +371,11 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
     <div class="node"><span class="n">Inicio</span><span class="d">Acceso grande a lo que hay que mirar hoy: la etapa en revisión o la entrega abierta. Qué hay en cada ambiente, próximo paso, tabla de fases y cómo se usa el artifact.</span></div>
     <div class="node"><span class="n">E-NN · fecha · En revisión <span class="tag o">desde la etapa 6</span></span><span class="d">La entrega abierta, siempre segunda en la barra. Cada entrega nueva es una pestaña nueva.</span></div>
     <div class="node"><span class="n">Definición</span><span class="d">Las etapas 1 a 5, cada una con versión, estado y casillas Apruebo / Observo.</span></div>
-    <div class="node sub"><span class="n">1. Funcional</span><span class="d">Se escribe acá; aprobado, Claude Code lo copia al repo. Después cambia solo por decisiones.</span></div>
+    <div class="node sub"><span class="n">1. Funcional <span class="tag">conversando</span></span><span class="d">El funcional completo, en texto enriquecido. Claude Code lo va poniendo como queda en cada avance de la conversación, hasta que se aprueba. Después cambia solo por decisiones.</span></div>
     <div class="node sub"><span class="n">2. Pantallas</span><span class="d">Imágenes con su código (P01, C3…), que se pegan o se eligen acá mismo. Muestra qué pantallas del funcional no tienen imagen.</span></div>
-    <div class="node sub"><span class="n">3. Arquitectura</span><span class="d">Se escribe en el repo; acá, un resumen llano para que el OO apruebe. Incluye el stack elegido.</span></div>
-    <div class="node sub"><span class="n">4. Setup</span><span class="d">Lista de comprobación del entorno: repo remoto, dependencias, pruebas y los tres ambientes. La aprueba Desarrollo.</span></div>
-    <div class="node sub"><span class="n">5. Plan de fases</span><span class="d">Resumen del plan; de acá sale la tabla de fases de Inicio.</span></div>
+    <div class="node sub"><span class="n">3. Arquitectura <span class="tag">conversando</span></span><span class="d">El documento resumen, en lenguaje llano, que Claude Code actualiza a medida que la arquitectura toma forma, hasta que el OO lo aprueba. Incluye el stack elegido. El detalle técnico queda en el repo.</span></div>
+    <div class="node sub"><span class="n">4. Setup <span class="tag">conversando</span></span><span class="d">El prompt para Claude Code que revisa e instala todo lo necesario, listo para copiar. Claude Code lo genera solo al aprobarse la arquitectura, y sirve también para cada máquina nueva. Debajo, la lista de comprobación con la evidencia: repo remoto, dependencias, pruebas y los tres ambientes. La aprueba Desarrollo.</span></div>
+    <div class="node sub"><span class="n">5. Plan de fases <span class="tag">conversando</span></span><span class="d">El documento resumen del plan, que se actualiza mientras toma forma y también después de aprobado, cada vez que el plan cambia. Muestra el avance: qué fases están cumplidas, en qué entrega se aprobó cada una y en qué salida fue a producción. Y el registro de cambios al plan, con lo que respalda cada uno.</span></div>
     <div class="node sub"><span class="n">Modelo de datos</span><span class="d">Diagrama entidad-relación que Claude Code actualiza en cada migración.</span></div>
     <div class="node"><span class="n">Observaciones</span><span class="d">Una sola tabla del proyecto, con tipo, gravedad, estado y las capturas como evidencia.</span></div>
     <div class="node"><span class="n">Decisiones</span><span class="d">Una sola tabla: qué se decidió, quién, estado, si pide aprobación explícita y qué sección del funcional cambia.</span></div>
@@ -382,7 +392,7 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
     <div class="node"><span class="n"><code>README.md</code></span><span class="d">Los tres pasos para arrancar.</span></div>
     <div class="node"><span class="n"><code>CLAUDE.md</code></span><span class="d">Lo que Claude Code lee al empezar: roles, reglas, enlace al artifact y dónde está cada cosa.</span></div>
     <div class="node"><span class="n"><code>docs/ciclo-convenciones.md</code></span><span class="d">Las reglas completas de este ciclo.</span></div>
-    <div class="node"><span class="n"><code>docs/funcional.md</code> y demás</span><span class="d">Funcional, pantallas, arquitectura, setup y plan de fases. Empiezan como plantillas vacías.</span></div>
+    <div class="node"><span class="n"><code>docs/funcional.md</code> y demás</span><span class="d">Funcional, pantallas, arquitectura, setup y plan de fases. Empiezan como plantillas vacías. Claude Code los escribe junto con la sección del artifact: dicen lo mismo.</span></div>
     <div class="node"><span class="n"><code>docs/estado/</code></span><span class="d">El espejo: observaciones, decisiones, backlog y estados, copiados al cerrar cada entrega.</span></div>
     <div class="node"><span class="n"><code>docs/avances/</code></span><span class="d">El diario, un archivo por día: <code>avances_AAAA-MM-DD.txt</code>.</span></div>
     <div class="node"><span class="n"><code>.claude/</code></span><span class="d">Los comandos del ciclo y los permisos que impiden tocar <code>main</code> sin confirmación.</span></div>
@@ -391,10 +401,10 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
   <div class="tbl"><table>
     <tr><th>Comando</th><th>Qué hace</th><th>Cuándo</th></tr>
     <tr><td><code>/iniciar-proyecto</code></td><td>Crea el artifact y deja el repo listo para la etapa 1</td><td>Una vez, después de clonar</td></tr>
-    <tr><td><code>/etapa</code></td><td>Pone en revisión la etapa en curso (1 a 5) y, cuando se aprueba, la copia al repo y abre la siguiente</td><td>Durante la definición</td></tr>
+    <tr><td><code>/etapa</code></td><td>Pone en revisión la etapa en curso (1 a 5) y, cuando se aprueba, abre la siguiente. El contenido se arma antes, conversando</td><td>Durante la definición</td></tr>
     <tr><td><code>/estado</code></td><td>Resume etapa, entrega abierta, observaciones y próximo paso</td><td>Al empezar cada sesión</td></tr>
     <tr><td><code>/pasar-a-testing</code></td><td>Publica en revisión y arma la pestaña <code>E-NN</code> con sus siete partes</td><td>Cuando develop está listo para probar</td></tr>
-    <tr><td><code>/procesar-entrega</code></td><td>Lee las casillas, numera las OBS, actualiza estados y copia el espejo</td><td>Después de que el OO cierra</td></tr>
+    <tr><td><code>/procesar-entrega</code></td><td>Lee las casillas, numera las OBS, actualiza estados, anota las fases cumplidas en el plan y copia el espejo</td><td>Después de que el OO cierra</td></tr>
     <tr><td><code>/pasar-a-produccion</code></td><td>Verifica que las fases estén Aprobadas, pide confirmación, hace merge, tag y prueba de humo</td><td>Con fases aprobadas</td></tr>
     <tr><td><code>/urgencia</code></td><td>Abre la rama desde <code>main</code>, test primero, y registra la OBS</td><td>Producción rota</td></tr>
   </table></div>
