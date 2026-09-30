@@ -111,9 +111,9 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
 
 <div class="wrap">
 <header>
-  <div class="asof">Propuesta del 30/09/2026 · reemplaza a la v2 · solo proyectos nuevos</div>
+  <div class="asof">Versión del 30/09/2026 · para proyectos nuevos</div>
   <h1>Ciclo de desarrollo v3</h1>
-  <p class="lede">Cómo trabajamos desde el funcional hasta producción. Un repo plantilla que se clona, un único artifact por proyecto que acompaña todo el ciclo, y seis etapas: las cinco de siempre más el Setup del entorno.</p>
+  <p class="lede">Cómo trabajamos desde el funcional hasta producción. Un repo plantilla que se clona, un único artifact por proyecto que acompaña todo el ciclo, y seis etapas, desde la definición hasta la construcción.</p>
   <p class="ir"><a href="https://cdruizdiaz.github.io/metodologia_desarrollo/comandos/">Guía de comandos: cuándo y cómo se usa cada uno →</a></p>
   <div class="roles" aria-label="Roles">
     <div class="role"><i class="dot" style="background:var(--oo)"></i><div><b>OO · Analista · QA</b> <span>decide, define, prueba y aprueba</span></div></div>
@@ -123,23 +123,7 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
 </header>
 
 <section>
-  <h2>Qué cambia respecto de la v2</h2>
-  <p class="lede">Las etapas, los roles y el circuito siguen igual. Esto es lo nuevo; en el resto de la página aparece marcado <span class="tag" style="margin-left:0">v3</span>.</p>
-  <ol class="rules">
-    <li><div><b>Un solo artifact por proyecto.</b> <span>Nace con el funcional y crece con cada etapa. Cada entrega es una pestaña nueva del mismo artifact.</span></div></li>
-    <li><div><b>Camino de urgencia.</b> <span>Si producción se rompe, se arregla desde <code>main</code> sin tocar la entrega abierta.</span></div></li>
-    <li><div><b>Decisiones con aprobación explícita.</b> <span>Las difíciles de revertir no se aceptan por silencio.</span></div></li>
-    <li><div><b>Producción con versión y vuelta atrás.</b> <span>Cada salida lleva un tag; si la prueba de humo falla, se vuelve al anterior.</span></div></li>
-    <li><div><b>Entrega bloqueada.</b> <span>Si algo impide seguir probando, se cierra con observaciones y lo no probado pasa a la siguiente.</span></div></li>
-    <li><div><b>El backlog se ordena al cerrar.</b> <span>En la misma pasada del cierre, el OO da destino a los pedidos nuevos.</span></div></li>
-    <li><div><b>El repo guarda un espejo.</b> <span>Al cerrar cada entrega, Claude Code copia observaciones, decisiones y estados a <code>docs/estado/</code>.</span></div></li>
-    <li><div><b>Etapa de Setup.</b> <span>Entre la arquitectura y el plan: repo remoto, dependencias y los tres ambientes andando antes de construir.</span></div></li>
-    <li><div><b>Las reglas las aplica la herramienta.</b> <span>Claude Code no puede tocar <code>main</code> sin tu confirmación, y la rama está protegida en GitHub.</span></div></li>
-  </ol>
-</section>
-
-<section>
-  <h2>Cómo arranca un proyecto <span class="tag">v3</span></h2>
+  <h2>Cómo arranca un proyecto</h2>
   <p class="lede">Tres pasos desde cero. A partir de ahí, todo pasa en el artifact.</p>
   <div class="states">
     <div class="srow"><h3>1 · Clonar</h3><div><p>Se clona el repo plantilla. Trae <code>CLAUDE.md</code>, las convenciones, las plantillas y los comandos. No trae stack: eso se decide en la etapa 3.</p>
@@ -309,11 +293,11 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
             <td><div class="box"><span>☐ Anda bien</span><span class="x">☐ Observo:</span></div></td>
           </tr>
         </table></div>
-        <p style="margin-top:8px">Un paso sin marcar al cierre queda “No probado” y vuelve en la entrega siguiente. <span class="tag">v3</span></p>
+        <p style="margin-top:8px">Un paso sin marcar al cierre queda “No probado” y vuelve en la entrega siguiente.</p>
       </div></div>
-      <div class="part"><span class="num">5</span><div><h3>Decisiones de desarrollo a validar</h3><p>Cada una con la casilla “No estoy de acuerdo”; sin marcar al cierre, queda aceptada. Las que llevan la marca <b>aprobación explícita</b> traen en cambio la casilla “Apruebo”, y sin marcar siguen A validar. <span class="tag">v3</span></p></div></div>
+      <div class="part"><span class="num">5</span><div><h3>Decisiones de desarrollo a validar</h3><p>Cada una con la casilla “No estoy de acuerdo”; sin marcar al cierre, queda aceptada. Las que llevan la marca <b>aprobación explícita</b> traen en cambio la casilla “Apruebo”, y sin marcar siguen A validar.</p></div></div>
       <div class="part"><span class="num">6</span><div><h3>Otras observaciones</h3><p>Casillas “Observo” para lo que no entra en ningún paso.</p></div></div>
-      <div class="part"><span class="num">7</span><div><h3>Cierre de la entrega</h3><p>Una sola casilla: “Apruebo esta entrega” o “Cierro con observaciones”. Vale como resultado de QA y decisión del OO. En la misma pasada, el OO da destino a los pedidos nuevos del backlog: a una fase, a una fase nueva o descartado. <span class="tag">v3</span></p></div></div>
+      <div class="part"><span class="num">7</span><div><h3>Cierre de la entrega</h3><p>Una sola casilla: “Apruebo esta entrega” o “Cierro con observaciones”. Vale como resultado de QA y decisión del OO. En la misma pasada, el OO da destino a los pedidos nuevos del backlog: a una fase, a una fase nueva o descartado.</p></div></div>
     </div>
   </div>
 </section>
@@ -330,7 +314,7 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
     <tr><td><b>Cómo termina</b></td><td>QA marca Anda bien al verificarla</td><td>—</td><td>Aceptada al cerrar la entrega, o pasa a observación</td></tr>
   </table></div>
   <p style="margin-top:12px" class="lede">Tipo de observación: <b>Error</b> (test primero, después el arreglo) · <b>Cambio</b> (se registra una DEC) · <b>Duda</b> (no se inventa: se pregunta). Gravedad: Bloquea · Normal · Menor.</p>
-  <p style="margin-top:8px" class="lede"><b>Aprobación explícita</b> <span class="tag" style="margin-left:0">v3</span> la llevan las decisiones que cuestan caro de revertir: modelo de datos, plata, seguridad y permisos, y borrado de datos. La marca la pone Desarrollo al registrar la decisión.</p>
+  <p style="margin-top:8px" class="lede"><b>Aprobación explícita</b> la llevan las decisiones que cuestan caro de revertir: modelo de datos, plata, seguridad y permisos, y borrado de datos. La marca la pone Desarrollo al registrar la decisión.</p>
 </section>
 
 <section>
@@ -366,7 +350,7 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
 </section>
 
 <section>
-  <h2>El artifact del proyecto <span class="tag">v3</span></h2>
+  <h2>El artifact del proyecto</h2>
   <p class="lede">Un solo artifact desde el primer día. Las personas trabajan ahí y Claude Code lo lee y lo escribe. Las pestañas aparecen a medida que el proyecto avanza.</p>
   <div class="tree">
     <div class="node"><span class="n">Inicio</span><span class="d">Acceso grande a lo que hay que mirar hoy: la etapa en revisión o la entrega abierta. Qué hay en cada ambiente, próximo paso, tabla de fases y cómo se usa el artifact.</span></div>
@@ -387,7 +371,7 @@ pre.cmdline{margin:8px 0 0; padding:9px 12px; background:var(--soft); border:1px
 </section>
 
 <section>
-  <h2>El repo plantilla <span class="tag">v3</span></h2>
+  <h2>El repo plantilla</h2>
   <p class="lede">Lo que viene al clonar. Lo técnico vive acá; el artifact es la cara para las personas, y el repo guarda su espejo.</p>
   <div class="tree">
     <div class="node"><span class="n"><code>README.md</code></span><span class="d">Los tres pasos para arrancar.</span></div>
