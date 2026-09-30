@@ -107,11 +107,12 @@ tr:last-child td{border-bottom:none;}
 </header>
 
 <section>
-  <h2>La metodología en seis ideas</h2>
+  <h2>La metodología en siete ideas</h2>
   <div class="cards">
     <div class="card"><h3>Un repo plantilla</h3><p>Cada proyecto nuevo nace clonando la plantilla. Trae las reglas, las plantillas de documentos y los comandos. No trae stack: se elige en la etapa 3.</p></div>
     <div class="card"><h3>Un solo artifact por proyecto</h3><p>Es la cara para las personas, desde el funcional hasta producción. Ahí se lee, se marca y se aprueba. El repo guarda lo técnico y un espejo en <code>docs/estado/</code>.</p></div>
     <div class="card"><h3>Seis etapas</h3><p>Funcional, Pantallas, Arquitectura, Setup y Plan de fases se hacen una vez. Las aprueba el OO, salvo el Setup, que lo aprueba Desarrollo. La sexta, Construcción, se repite entrega por entrega.</p></div>
+    <div class="card"><h3>La definición se hace conversando</h3><p>Funcional, Arquitectura, Setup y Plan de fases se trabajan chateando con Claude Code. En cada avance deja el resultado en la sección del artifact, donde se ve cómo va quedando hasta que se aprueba.</p></div>
     <div class="card"><h3>Tres ambientes</h3><p>Desarrollo (rama <code>develop</code>), testing (rama <code>revision</code>) y producción (rama <code>main</code>). Quedan andando en el Setup, y de uno a otro se pasa siempre con un comando.</p></div>
     <div class="card"><h3>Entregas de a una</h3><p>Una entrega es lo que hay para probar ahora. Hay una sola abierta a la vez, y cerrada no se reabre: lo pendiente pasa a la siguiente.</p></div>
     <div class="card"><h3>Las personas marcan, Claude Code registra</h3><p>Aprobar, cerrar y aceptar son casillas que solo marca una persona. Claude Code las lee y actúa en consecuencia; nunca las marca.</p></div>
@@ -151,12 +152,12 @@ tr:last-child td{border-bottom:none;}
       <h3>Etapas 1 a 5 · definición</h3>
       <div class="bucle">
         <div class="rep">Se repite en cada etapa: Funcional, Pantallas, Arquitectura, Setup, Plan de fases</div>
-        <div class="paso persona"><div class="q"><i class="dot d-o"></i>Analista o Desarrollo</div><div class="t">Escribe el contenido de la etapa, conversando con Claude Code. El funcional también se puede editar en el artifact.</div><div class="c"><span class="sin">sin comando</span></div></div>
+        <div class="paso persona"><div class="q"><i class="dot d-o"></i>Analista o Desarrollo</div><div class="t">Define el contenido de la etapa chateando con Claude Code, que en cada avance actualiza la sección del artifact. <span>Las Pantallas son la excepción: las imágenes se cargan en la página.</span></div><div class="c"><span class="sin">sin comando</span></div></div>
         <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Cuando el contenido está listo, pone la etapa En revisión y avisa.</div><div class="c"><span class="cmd">/etapa</span></div></div>
         <div class="paso persona"><div class="q"><i class="dot d-o"></i>OO</div><div class="t">En el artifact, pestaña Definición: marca “Apruebo esta etapa” o “Devuelvo con observaciones”. <span>En el Setup, la casilla la marca Desarrollo.</span></div><div class="c"><span class="sin">sin comando</span></div></div>
-        <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Lee la casilla. Aprobada: copia al repo y abre la etapa siguiente. Devuelta: corrige y la pone otra vez en revisión.</div><div class="c"><span class="cmd">/etapa</span></div></div>
+        <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Lee la casilla. Aprobada: abre la etapa siguiente. Devuelta: corrige, conversando, y la pone otra vez en revisión.</div><div class="c"><span class="cmd">/etapa</span></div></div>
       </div>
-      <p class="lede">El Setup (etapa 4) es la puerta a la construcción: conecta el repo remoto, instala las dependencias y deja una página mínima publicada en desarrollo, testing y producción. Al aprobarse el Plan de fases se crean las fases y el proyecto pasa a la etapa 6.</p>
+      <p class="lede">El Setup (etapa 4) es la puerta a la construcción. Al aprobarse la arquitectura, Claude Code genera solo el prompt que revisa e instala todo lo necesario y lo deja en el artifact: con él se conecta el repo remoto, se instalan las dependencias y queda una página mínima publicada en desarrollo, testing y producción. Al aprobarse el Plan de fases se crean las fases y el proyecto pasa a la etapa 6.</p>
     </div>
 
     <div class="tramo">
@@ -166,7 +167,7 @@ tr:last-child td{border-bottom:none;}
         <div class="paso devp"><div class="q"><i class="dot d-d"></i>Desarrollo</div><div class="t">Construye la fase o corrige observaciones en <code>develop</code>. Para un error, primero la prueba que falla y después el arreglo.</div><div class="c"><span class="sin">sin comando</span></div></div>
         <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Pasa de desarrollo a testing: lleva <code>develop</code> a <code>revision</code> y arma la pestaña de la entrega con el guion para probar.</div><div class="c"><span class="cmd">/pasar-a-testing</span></div></div>
         <div class="paso persona"><div class="q"><i class="dot d-o"></i>QA y OO</div><div class="t">En el artifact: QA marca “Anda bien” u “Observo” en cada paso. El OO valida decisiones, da destino a los pedidos del backlog y marca el cierre.</div><div class="c"><span class="sin">sin comando</span></div></div>
-        <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Lee las casillas, numera las observaciones, actualiza estados, cierra la entrega y copia el espejo al repo.</div><div class="c"><span class="cmd">/procesar-entrega</span></div></div>
+        <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Lee las casillas, numera las observaciones, actualiza estados, anota en el plan las fases cumplidas, cierra la entrega y copia el espejo al repo.</div><div class="c"><span class="cmd">/procesar-entrega</span></div></div>
         <div class="rep">Desde ahí, tres caminos</div>
         <div class="salidas">
           <div class="paso devp"><div class="q"><i class="dot d-d"></i>Corregir</div><div class="t">Lo observado vuelve a <code>develop</code> con su número y reaparece en la entrega siguiente.</div><div class="c"><span class="sin">sin comando</span></div></div>
@@ -195,7 +196,7 @@ tr:last-child td{border-bottom:none;}
         <dt>Pregunta</dt><dd>Nombre del proyecto, una o dos frases sobre qué es, y quién es OO, Analista, QA y Desarrollo.</dd>
         <dt>Qué hace</dt><dd><ul><li>Si la carpeta se clonó de la plantilla, la desconecta de ese repo y arranca el historial de cero, con tu confirmación.</li><li>Prepara el repo con las ramas <code>main</code>, <code>develop</code> y <code>revision</code>.</li><li>Publica el artifact del proyecto y guarda su enlace en <code>CLAUDE.md</code>.</li><li>Carga la etapa 1 (Funcional) en Borrador.</li><li>Abre el diario y hace el primer commit.</li></ul></dd>
         <dt>Se detiene si</dt><dd><ul><li>El proyecto ya tiene un artifact.</li><li>Falta lo mínimo: git, la identidad de git, o el acceso a los artifacts de claude.ai desde Claude Code. Dice qué falta y cómo resolverlo.</li></ul></dd>
-        <dt>Después</dt><dd>Escribir el funcional. Cuando esté listo para revisar, <code>/etapa</code>.</dd>
+        <dt>Después</dt><dd>Definir el funcional conversando con Claude Code, que lo va dejando en el artifact. Cuando esté listo para revisar, <code>/etapa</code>.</dd>
       </dl>
     </div>
 
@@ -212,10 +213,10 @@ tr:last-child td{border-bottom:none;}
       <div class="cab"><h3>/etapa</h3><span>Avanza la etapa de definición en curso</span></div>
       <dl>
         <dt>Cuándo</dt><dd>Dos veces por etapa, durante las etapas 1 a 5: una para pedir la revisión y otra para procesarla.</dd>
-        <dt>Si está en Borrador</dt><dd>Ayuda a completar el contenido y, cuando está listo, pone la etapa En revisión para que el OO la vea en el artifact.</dd>
-        <dt>Si está En revisión</dt><dd><ul><li><b>Sin casilla marcada:</b> avisa que el OO todavía no revisó y termina.</li><li><b>Devuelta con observaciones:</b> resuelve cada una, corrige y vuelve a ponerla en revisión.</li><li><b>Aprobada:</b> registra la aprobación diciendo qué marca leyó, copia el contenido al repo y abre la etapa siguiente.</li></ul></dd>
-        <dt>En el Setup</dt><dd>Recorre la lista de comprobación del entorno y marca cada punto solo cuando lo comprobó. Lo que necesita una cuenta o un permiso (crear el repo remoto, el hosting, los secretos) lo pide. La aprobación es de Desarrollo.</dd>
-        <dt>Después</dt><dd>Al aprobarse el Plan de fases crea las fases y deja el proyecto en la etapa 6.</dd>
+        <dt>Si está en Borrador</dt><dd>El contenido ya se fue armando en la conversación y está en el artifact. Verifica que el repo y el artifact digan lo mismo y pone la etapa En revisión para que el OO la apruebe.</dd>
+        <dt>Si está En revisión</dt><dd><ul><li><b>Sin casilla marcada:</b> avisa que el OO todavía no revisó y termina.</li><li><b>Devuelta con observaciones:</b> resuelve cada una, corrige y vuelve a ponerla en revisión.</li><li><b>Aprobada:</b> registra la aprobación diciendo qué marca leyó y abre la etapa siguiente. Al aprobarse la Arquitectura, genera el prompt de Setup.</li></ul></dd>
+        <dt>En el Setup</dt><dd>El prompt que está en el artifact revisa e instala todo; se copia y se pega en Claude Code. Debajo queda la lista de comprobación, y cada punto se marca solo cuando se comprobó, con su evidencia. Lo que necesita una cuenta o un permiso (crear el repo remoto, el hosting, los secretos) lo pide. La aprobación es de Desarrollo.</dd>
+        <dt>Después</dt><dd>Al aprobarse el Plan de fases crea las fases y deja el proyecto en la etapa 6. El plan se sigue manteniendo al día, sin comando: avance y cambios.</dd>
       </dl>
     </div>
 
@@ -234,7 +235,7 @@ tr:last-child td{border-bottom:none;}
       <dl>
         <dt>Cuándo</dt><dd>Después de que el OO marca el cierre de la entrega en el artifact.</dd>
         <dt>Se detiene si</dt><dd>Todavía no hay cierre marcado. Cerrar es del OO.</dd>
-        <dt>Qué hace</dt><dd><ul><li>Cada “Observo” pasa a ser una observación con número, tipo y gravedad. Si es una duda, pregunta antes de seguir.</li><li>Una observación verificada con “Anda bien” se cierra; una que sigue fallando se reabre con el mismo número.</li><li>Un paso sin marcar queda como No probado para la entrega siguiente.</li><li>Las decisiones sin objeción quedan aceptadas; las de aprobación explícita sin marcar vuelven en la próxima.</li><li>Los pedidos del backlog reciben el destino que eligió el OO.</li><li>Cierra la entrega y copia el espejo a <code>docs/estado/</code>.</li></ul></dd>
+        <dt>Qué hace</dt><dd><ul><li>Cada “Observo” pasa a ser una observación con número, tipo y gravedad. Si es una duda, pregunta antes de seguir.</li><li>Una observación verificada con “Anda bien” se cierra; una que sigue fallando se reabre con el mismo número.</li><li>Un paso sin marcar queda como No probado para la entrega siguiente.</li><li>Las decisiones sin objeción quedan aceptadas; las de aprobación explícita sin marcar vuelven en la próxima.</li><li>Los pedidos del backlog reciben el destino que eligió el OO. Si eso cambia el plan, lo actualiza y lo anota en “Cambios al plan”.</li><li>Cada fase que queda Aprobada se anota como cumplida en el plan, con la entrega que la respalda.</li><li>Cierra la entrega y copia el espejo a <code>docs/estado/</code>.</li></ul></dd>
         <dt>Después</dt><dd>Cuenta cómo cerró, qué observaciones hay, qué fases quedaron Aprobadas y cuál de los tres caminos sigue.</dd>
       </dl>
     </div>
@@ -244,7 +245,7 @@ tr:last-child td{border-bottom:none;}
       <dl>
         <dt>Cuándo</dt><dd>Solo cuando una persona lo escribe. En el MVP se juntan varias fases antes de salir; en mantenimiento, una entrega aprobada puede salir el mismo día.</dd>
         <dt>Se detiene si</dt><dd><ul><li>Hay una entrega abierta.</li><li>Alguna fase incluida no está Aprobada.</li><li>Alguna prueba automática falla.</li></ul></dd>
-        <dt>Qué hace</dt><dd><ul><li>Muestra qué va a salir y pide un sí explícito.</li><li>Lleva <code>revision</code> a <code>main</code> con el tag <code>prod-AAAA-MM-DD</code>.</li><li>Despliega y corre la prueba de humo.</li></ul></dd>
+        <dt>Qué hace</dt><dd><ul><li>Muestra qué va a salir y pide un sí explícito.</li><li>Lleva <code>revision</code> a <code>main</code> con el tag <code>prod-AAAA-MM-DD</code>.</li><li>Despliega y corre la prueba de humo.</li><li>Anota en el plan con qué tag salió cada fase.</li></ul></dd>
         <dt>Si el humo falla</dt><dd>Vuelve al tag anterior y abre una observación que Bloquea. Las fases siguen Aprobadas, no En producción.</dd>
       </dl>
     </div>
@@ -266,7 +267,9 @@ tr:last-child td{border-bottom:none;}
     <tr><th>Qué</th><th>Quién</th><th>Dónde</th></tr>
     <tr><td>Marcar “Anda bien”, “Observo”, aprobar una etapa o cerrar una entrega</td><td>QA y OO</td><td>En el artifact</td></tr>
     <tr><td>Contar qué se vio y adjuntar una captura</td><td>QA</td><td>En el artifact, debajo de “Observo”</td></tr>
-    <tr><td>Editar el funcional mientras no esté Aprobado</td><td>Analista</td><td>En el artifact, “Editar el texto”, o conversando con Claude Code</td></tr>
+    <tr><td>Definir el Funcional, la Arquitectura, el Setup y el Plan de fases</td><td>Analista o Desarrollo + Claude Code</td><td>Chateando en Claude Code. El resultado se ve en el artifact, Definición, al día en cada avance</td></tr>
+    <tr><td>Correr el prompt de Setup, en el proyecto o en una máquina nueva</td><td>Desarrollo</td><td>Se copia del artifact, Definición → 4. Setup, y se pega en Claude Code</td></tr>
+    <tr><td>Cambiar el plan después de aprobado</td><td>Desarrollo + Claude Code</td><td>Chateando en Claude Code. Queda anotado en “Cambios al plan”, con el pedido del backlog o la decisión que lo respalda</td></tr>
     <tr><td>Agregar una pantalla y cargarle la imagen, pegándola con Ctrl+V o eligiendo un archivo, mientras la etapa no esté Aprobada</td><td>Analista u OO</td><td>En el artifact, Definición → 2. Pantallas</td></tr>
     <tr><td>Agregar un pedido nuevo</td><td>Cualquiera</td><td>En el artifact, pestaña Backlog</td></tr>
     <tr><td>Construir una fase o corregir una observación</td><td>Desarrollo + Claude Code</td><td>En Claude Code, rama <code>develop</code>, pidiéndolo con palabras</td></tr>
@@ -306,6 +309,7 @@ tr:last-child td{border-bottom:none;}
       <li>Una fase pasa a Aprobada cuando no le quedan observaciones abiertas ni pasos No probados, sea cual sea la casilla de cierre.</li>
       <li>Si marcar el cierre de una entrega debe bloquear las casillas de los pasos. Hoy no las bloquea.</li>
       <li>El contenido de la lista de comprobación del Setup, y que la apruebe Desarrollo en lugar del OO.</li>
+      <li>Qué tiene que decir el prompt de Setup. Se va a ajustar con la primera arquitectura real.</li>
     </ul>
   </div>
 </section>
