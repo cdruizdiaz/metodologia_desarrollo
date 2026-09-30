@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{box-sizing:border-box}body{margin:0;padding:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head><body>
+<title>Comandos del Ciclo v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: una columna de lectura de 1000px. El recorrido del proyecto es una línea de tiempo
+   vertical; cada comando tiene después su ficha con las mismas cuatro filas. */
+:root{
+  --bg:#F4F5F8; --panel:#FFFFFF; --lane:#EAECF1; --fg:#1A1E27; --muted:#5B6474; --line:#C9CED8;
+  --oo:#B8336A; --dev:#2F5BD3; --cc:#A86A10; --ok:#2E7D4F; --soft:#F0F1F5;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Public Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11141A; --panel:#1A1E27; --lane:#161A21; --fg:#E6E9EF; --muted:#9AA3B2; --line:#343B48;
+    --oo:#F07AA8; --dev:#86A3F7; --cc:#E3AE52; --ok:#6BCB93; --soft:#20252F; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11141A; --panel:#1A1E27; --lane:#161A21; --fg:#E6E9EF; --muted:#9AA3B2; --line:#343B48;
+  --oo:#F07AA8; --dev:#86A3F7; --cc:#E3AE52; --ok:#6BCB93; --soft:#20252F; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--fg); font:15px/1.55 var(--body); padding-inline:16px; padding-block:28px 56px;}
+.wrap{max-width:1000px; margin:0 auto; display:flex; flex-direction:column; gap:44px;}
+section,header{display:flex; flex-direction:column; gap:12px; min-width:0;}
+h1{font:700 clamp(28px,4vw,40px)/1.1 var(--display); margin:0; letter-spacing:-.01em;}
+h2{font:700 21px/1.2 var(--display); margin:0; text-wrap:balance;}
+h3{font:700 15px/1.3 var(--display); margin:0;}
+p{margin:0; max-width:70ch;}
+.lede{color:var(--muted);}
+.asof{font:500 12px var(--mono); color:var(--muted);}
+code,.cmd{font-family:var(--mono); font-size:.88em;}
+.cmd{display:inline-block; padding:2px 9px; border-radius:999px; border:1px solid var(--cc); color:var(--cc); font-weight:500; white-space:nowrap;}
+.cmd.solo{border-color:var(--oo); color:var(--oo);}
+.roles{display:flex; flex-wrap:wrap; gap:8px 28px;}
+.role{display:flex; gap:10px; align-items:baseline;}
+.dot{width:10px; height:10px; border-radius:50%; flex:none; transform:translateY(1px);}
+.d-o{background:var(--oo);} .d-d{background:var(--dev);} .d-k{background:var(--cc);}
+.role b{font-weight:600;} .role span{color:var(--muted);}
+.cards{display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:12px;}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; display:flex; flex-direction:column; gap:6px; min-width:0;}
+.card p{color:var(--muted); font-size:14px;}
+.tbl{overflow-x:auto;}
+table{border-collapse:collapse; width:100%; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; font-size:14px;}
+th,td{padding:10px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line);}
+th{font:600 13px var(--body); color:var(--muted); background:var(--soft);}
+tr:last-child td{border-bottom:none;}
+/* recorrido */
+.ruta{display:flex; flex-direction:column; gap:10px;}
+.tramo{display:flex; flex-direction:column; gap:8px;}
+.tramo>h3{margin-top:6px;}
+.bucle{border:1px dashed var(--line); border-radius:12px; padding:12px; display:flex; flex-direction:column; gap:8px; background:var(--lane);}
+.bucle>.rep{font:600 12px var(--body); color:var(--muted); text-transform:uppercase; letter-spacing:.05em;}
+.paso{display:grid; grid-template-columns:150px 1fr auto; gap:6px 14px; align-items:start; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px 14px;}
+.paso>*{min-width:0;}
+.paso .q{display:flex; gap:8px; align-items:baseline; font-weight:600; font-size:13.5px;}
+.paso .t{font-size:14px;}
+.paso .t span{color:var(--muted);}
+.paso .c{justify-self:end;}
+.sin{font-size:12.5px; color:var(--muted); white-space:nowrap;}
+.paso.persona{border-left:3px solid var(--oo);}
+.paso.claude{border-left:3px solid var(--cc);}
+.paso.devp{border-left:3px solid var(--dev);}
+.salidas{display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:8px;}
+.salidas .paso{grid-template-columns:1fr;}
+.salidas .paso .c{justify-self:start;}
+/* fichas */
+.ficha{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:16px 18px; display:flex; flex-direction:column; gap:10px; min-width:0;}
+.ficha .cab{display:flex; flex-wrap:wrap; gap:6px 12px; align-items:baseline;}
+.ficha .cab h3{font:500 17px var(--mono);}
+.ficha .cab span{color:var(--muted); font-size:14px;}
+.ficha dl{margin:0; display:grid; grid-template-columns:150px 1fr; gap:8px 14px; font-size:14px;}
+.ficha dt{font-weight:600; color:var(--muted);}
+.ficha dd{margin:0; min-width:0;}
+.ficha ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:3px;}
+.fichas{display:flex; flex-direction:column; gap:12px;}
+.rules{margin:0; padding:0; list-style:none; counter-reset:r; display:grid; gap:8px;}
+.rules li{counter-increment:r; display:grid; grid-template-columns:28px 1fr; gap:10px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px 14px;}
+.rules li::before{content:counter(r); font:600 13px var(--mono); color:var(--oo);}
+.rules li span{color:var(--muted);}
+.rules li>div{min-width:0;}
+.aviso{border:1px solid var(--cc); border-radius:12px; padding:14px 16px; display:flex; flex-direction:column; gap:8px; background:var(--panel);}
+.aviso ul{margin:0; padding-left:18px; display:flex; flex-direction:column; gap:4px; font-size:14px;}
+@media (max-width:640px){
+  .paso{grid-template-columns:1fr;} .paso .c{justify-self:start;}
+  .ficha dl{grid-template-columns:1fr; gap:2px 0;} .ficha dd{margin-bottom:8px;}
+}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="asof">Estado al 30/09/2026 · plantilla todavía sin estrenar en un proyecto real</div>
+  <h1>Comandos del Ciclo v3</h1>
+  <p class="lede">La metodología acordada hasta acá, contada por lo que hay que hacer en cada momento: quién actúa, dónde, y qué comando se escribe en Claude Code. El detalle completo de las reglas está en la página “Ciclo de desarrollo v3”.</p>
+  <div class="roles" aria-label="Roles">
+    <div class="role"><i class="dot d-o"></i><div><b>OO · Analista · QA</b> <span>decide, define, prueba y aprueba</span></div></div>
+    <div class="role"><i class="dot d-d"></i><div><b>Desarrollo</b> <span>arquitectura, programación y pruebas automáticas</span></div></div>
+    <div class="role"><i class="dot d-k"></i><div><b>Claude Code</b> <span>prepara, registra y responde; nunca aprueba ni cierra</span></div></div>
+  </div>
+</header>
+
+<section>
+  <h2>La metodología en seis ideas</h2>
+  <div class="cards">
+    <div class="card"><h3>Un repo plantilla</h3><p>Cada proyecto nuevo nace clonando la plantilla. Trae las reglas, las plantillas de documentos y los comandos. No trae stack: se elige en la etapa 3.</p></div>
+    <div class="card"><h3>Un solo artifact por proyecto</h3><p>Es la cara para las personas, desde el funcional hasta producción. Ahí se lee, se marca y se aprueba. El repo guarda lo técnico y un espejo en <code>docs/estado/</code>.</p></div>
+    <div class="card"><h3>Seis etapas</h3><p>Funcional, Pantallas, Arquitectura, Setup y Plan de fases se hacen una vez. Las aprueba el OO, salvo el Setup, que lo aprueba Desarrollo. La sexta, Construcción, se repite entrega por entrega.</p></div>
+    <div class="card"><h3>Tres ambientes</h3><p>Desarrollo (rama <code>develop</code>), testing (rama <code>revision</code>) y producción (rama <code>main</code>). Quedan andando en el Setup, y de uno a otro se pasa siempre con un comando.</p></div>
+    <div class="card"><h3>Entregas de a una</h3><p>Una entrega es lo que hay para probar ahora. Hay una sola abierta a la vez, y cerrada no se reabre: lo pendiente pasa a la siguiente.</p></div>
+    <div class="card"><h3>Las personas marcan, Claude Code registra</h3><p>Aprobar, cerrar y aceptar son casillas que solo marca una persona. Claude Code las lee y actúa en consecuencia; nunca las marca.</p></div>
+  </div>
+</section>
+
+<section>
+  <h2>Cómo se lanza un comando</h2>
+  <p class="lede">Los comandos viven en <code>.claude/skills/</code> dentro del repo, así que quien clona la plantilla ya los tiene. Se usan en Claude Code, abierto en la carpeta del proyecto.</p>
+  <div class="cards">
+    <div class="card"><h3>Escribiéndolo</h3><p>Se escribe la barra y el nombre, por ejemplo <code>/estado</code>. Es la forma segura de que corra exactamente ese procedimiento, y la recomendada para todo paso importante.</p></div>
+    <div class="card"><h3>Pidiéndolo con palabras</h3><p>Si se pregunta “¿en qué estamos?”, Claude Code puede usar <code>/estado</code> por su cuenta. Depende de que reconozca el pedido, así que no conviene confiarle los pasos clave.</p></div>
+    <div class="card"><h3>La excepción</h3><p><code>/pasar-a-produccion</code> solo lo puede lanzar una persona escribiéndolo. Claude Code no lo tiene disponible para usarlo por iniciativa propia.</p></div>
+  </div>
+  <p class="lede">Si no se sabe qué comando toca, <code>/estado</code> lo dice: termina siempre con un único próximo paso y su comando.</p>
+</section>
+
+<section>
+  <h2>El recorrido de un proyecto</h2>
+  <p class="lede">De arriba hacia abajo, en el orden en que ocurre. El borde de cada paso indica quién actúa: rosa una persona en el artifact, azul Desarrollo en el código, ocre un comando en Claude Code.</p>
+  <div class="ruta">
+
+    <div class="tramo">
+      <h3>Arranque · una sola vez</h3>
+      <div class="paso devp"><div class="q"><i class="dot d-d"></i>Desarrollo</div><div class="t">Clona el repo plantilla y abre Claude Code en esa carpeta.</div><div class="c"><span class="sin">sin comando</span></div></div>
+      <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Pregunta nombre, descripción y roles. Crea el artifact, las ramas y carga la etapa 1 en Borrador.</div><div class="c"><span class="cmd">/iniciar-proyecto</span></div></div>
+      <div class="paso devp"><div class="q"><i class="dot d-d"></i>Desarrollo</div><div class="t">Comparte el artifact con quienes van a marcar casillas.</div><div class="c"><span class="sin">sin comando</span></div></div>
+    </div>
+
+    <div class="tramo">
+      <h3>Cada vez que se abre una sesión</h3>
+      <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Dice dónde está el proyecto, qué espera a una persona, qué espera a Desarrollo y cuál es el próximo paso. <span>Solo lee.</span></div><div class="c"><span class="cmd">/estado</span></div></div>
+    </div>
+
+    <div class="tramo">
+      <h3>Etapas 1 a 5 · definición</h3>
+      <div class="bucle">
+        <div class="rep">Se repite en cada etapa: Funcional, Pantallas, Arquitectura, Setup, Plan de fases</div>
+        <div class="paso persona"><div class="q"><i class="dot d-o"></i>Analista o Desarrollo</div><div class="t">Escribe el contenido de la etapa, conversando con Claude Code. El funcional también se puede editar en el artifact.</div><div class="c"><span class="sin">sin comando</span></div></div>
+        <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Cuando el contenido está listo, pone la etapa En revisión y avisa.</div><div class="c"><span class="cmd">/etapa</span></div></div>
+        <div class="paso persona"><div class="q"><i class="dot d-o"></i>OO</div><div class="t">En el artifact, pestaña Definición: marca “Apruebo esta etapa” o “Devuelvo con observaciones”. <span>En el Setup, la casilla la marca Desarrollo.</span></div><div class="c"><span class="sin">sin comando</span></div></div>
+        <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Lee la casilla. Aprobada: copia al repo y abre la etapa siguiente. Devuelta: corrige y la pone otra vez en revisión.</div><div class="c"><span class="cmd">/etapa</span></div></div>
+      </div>
+      <p class="lede">El Setup (etapa 4) es la puerta a la construcción: conecta el repo remoto, instala las dependencias y deja una página mínima publicada en desarrollo, testing y producción. Al aprobarse el Plan de fases se crean las fases y el proyecto pasa a la etapa 6.</p>
+    </div>
+
+    <div class="tramo">
+      <h3>Etapa 6 · construcción</h3>
+      <div class="bucle">
+        <div class="rep">Se repite en cada entrega</div>
+        <div class="paso devp"><div class="q"><i class="dot d-d"></i>Desarrollo</div><div class="t">Construye la fase o corrige observaciones en <code>develop</code>. Para un error, primero la prueba que falla y después el arreglo.</div><div class="c"><span class="sin">sin comando</span></div></div>
+        <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Pasa de desarrollo a testing: lleva <code>develop</code> a <code>revision</code> y arma la pestaña de la entrega con el guion para probar.</div><div class="c"><span class="cmd">/pasar-a-testing</span></div></div>
+        <div class="paso persona"><div class="q"><i class="dot d-o"></i>QA y OO</div><div class="t">En el artifact: QA marca “Anda bien” u “Observo” en cada paso. El OO valida decisiones, da destino a los pedidos del backlog y marca el cierre.</div><div class="c"><span class="sin">sin comando</span></div></div>
+        <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Lee las casillas, numera las observaciones, actualiza estados, cierra la entrega y copia el espejo al repo.</div><div class="c"><span class="cmd">/procesar-entrega</span></div></div>
+        <div class="rep">Desde ahí, tres caminos</div>
+        <div class="salidas">
+          <div class="paso devp"><div class="q"><i class="dot d-d"></i>Corregir</div><div class="t">Lo observado vuelve a <code>develop</code> con su número y reaparece en la entrega siguiente.</div><div class="c"><span class="sin">sin comando</span></div></div>
+          <div class="paso devp"><div class="q"><i class="dot d-d"></i>Seguir</div><div class="t">Lo aprobado libera la fase siguiente del plan, que se construye en <code>develop</code>.</div><div class="c"><span class="sin">sin comando</span></div></div>
+          <div class="paso persona"><div class="q"><i class="dot d-o"></i>Salir a producción</div><div class="t">Cuando el OO lo decide y hay fases Aprobadas. Lleva tag y prueba de humo.</div><div class="c"><span class="cmd solo">/pasar-a-produccion</span></div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tramo">
+      <h3>Fuera del circuito · solo si producción está rota</h3>
+      <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Arregla desde <code>main</code> sin tocar la entrega abierta, con prueba primero y aprobación del OO antes de salir.</div><div class="c"><span class="cmd">/urgencia</span></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Ficha de cada comando</h2>
+  <p class="lede">Cada comando revisa sus condiciones antes de actuar. Si no se cumplen, se detiene y explica qué falta.</p>
+  <div class="fichas">
+
+    <div class="ficha">
+      <div class="cab"><h3>/iniciar-proyecto</h3><span>Arranca un proyecto nuevo</span></div>
+      <dl>
+        <dt>Cuándo</dt><dd>Una sola vez, apenas se clona la plantilla.</dd>
+        <dt>Pregunta</dt><dd>Nombre del proyecto, una o dos frases sobre qué es, y quién es OO, Analista, QA y Desarrollo.</dd>
+        <dt>Qué hace</dt><dd><ul><li>Prepara el repo con las ramas <code>main</code>, <code>develop</code> y <code>revision</code>.</li><li>Publica el artifact del proyecto y guarda su enlace en <code>CLAUDE.md</code>.</li><li>Carga la etapa 1 (Funcional) en Borrador.</li><li>Abre el diario y hace el primer commit.</li></ul></dd>
+        <dt>Se detiene si</dt><dd>El proyecto ya tiene un artifact.</dd>
+        <dt>Después</dt><dd>Escribir el funcional. Cuando esté listo para revisar, <code>/etapa</code>.</dd>
+      </dl>
+    </div>
+
+    <div class="ficha">
+      <div class="cab"><h3>/estado</h3><span>Dice dónde está el proyecto</span></div>
+      <dl>
+        <dt>Cuándo</dt><dd>Al empezar cada sesión, o cuando no se sabe qué sigue.</dd>
+        <dt>Qué hace</dt><dd>Lee el artifact y el repo, sin cambiar nada. Responde qué etapa y fase están en curso, qué espera a una persona, qué espera a Desarrollo y un único próximo paso con su comando.</dd>
+        <dt>Avisa si</dt><dd>El repo y el artifact no coinciden, o falta correr <code>/iniciar-proyecto</code>.</dd>
+      </dl>
+    </div>
+
+    <div class="ficha">
+      <div class="cab"><h3>/etapa</h3><span>Avanza la etapa de definición en curso</span></div>
+      <dl>
+        <dt>Cuándo</dt><dd>Dos veces por etapa, durante las etapas 1 a 5: una para pedir la revisión y otra para procesarla.</dd>
+        <dt>Si está en Borrador</dt><dd>Ayuda a completar el contenido y, cuando está listo, pone la etapa En revisión para que el OO la vea en el artifact.</dd>
+        <dt>Si está En revisión</dt><dd><ul><li><b>Sin casilla marcada:</b> avisa que el OO todavía no revisó y termina.</li><li><b>Devuelta con observaciones:</b> resuelve cada una, corrige y vuelve a ponerla en revisión.</li><li><b>Aprobada:</b> registra la aprobación diciendo qué marca leyó, copia el contenido al repo y abre la etapa siguiente.</li></ul></dd>
+        <dt>En el Setup</dt><dd>Recorre la lista de comprobación del entorno y marca cada punto solo cuando lo comprobó. Lo que necesita una cuenta o un permiso (crear el repo remoto, el hosting, los secretos) lo pide. La aprobación es de Desarrollo.</dd>
+        <dt>Después</dt><dd>Al aprobarse el Plan de fases crea las fases y deja el proyecto en la etapa 6.</dd>
+      </dl>
+    </div>
+
+    <div class="ficha">
+      <div class="cab"><h3>/pasar-a-testing</h3><span>Publica lo que hay para probar</span></div>
+      <dl>
+        <dt>Cuándo</dt><dd>En la etapa 6, cuando <code>develop</code> está listo para que QA pruebe. Es el paso de desarrollo a testing.</dd>
+        <dt>Se detiene si</dt><dd><ul><li>Ya hay otra entrega abierta.</li><li>Alguna prueba automática falla.</li><li>Hay cambios sin guardar en el repo.</li></ul></dd>
+        <dt>Qué hace</dt><dd><ul><li>Junta lo que entra: fases nuevas, observaciones corregidas, pasos que quedaron sin probar y decisiones a validar.</li><li>Lleva <code>develop</code> a <code>revision</code> y despliega el ambiente de revisión.</li><li>Arma la pestaña <code>E-NN</code> con sus siete partes. El guion trae solo lo que la máquina no puede probar.</li></ul></dd>
+        <dt>Después</dt><dd><code>revision</code> queda congelada hasta procesar la entrega. El trabajo sigue en <code>develop</code>.</dd>
+      </dl>
+    </div>
+
+    <div class="ficha">
+      <div class="cab"><h3>/procesar-entrega</h3><span>Convierte las casillas en trabajo y estados</span></div>
+      <dl>
+        <dt>Cuándo</dt><dd>Después de que el OO marca el cierre de la entrega en el artifact.</dd>
+        <dt>Se detiene si</dt><dd>Todavía no hay cierre marcado. Cerrar es del OO.</dd>
+        <dt>Qué hace</dt><dd><ul><li>Cada “Observo” pasa a ser una observación con número, tipo y gravedad. Si es una duda, pregunta antes de seguir.</li><li>Una observación verificada con “Anda bien” se cierra; una que sigue fallando se reabre con el mismo número.</li><li>Un paso sin marcar queda como No probado para la entrega siguiente.</li><li>Las decisiones sin objeción quedan aceptadas; las de aprobación explícita sin marcar vuelven en la próxima.</li><li>Los pedidos del backlog reciben el destino que eligió el OO.</li><li>Cierra la entrega y copia el espejo a <code>docs/estado/</code>.</li></ul></dd>
+        <dt>Después</dt><dd>Cuenta cómo cerró, qué observaciones hay, qué fases quedaron Aprobadas y cuál de los tres caminos sigue.</dd>
+      </dl>
+    </div>
+
+    <div class="ficha">
+      <div class="cab"><h3>/pasar-a-produccion</h3><span>De testing a producción, con las fases Aprobadas</span></div>
+      <dl>
+        <dt>Cuándo</dt><dd>Solo cuando una persona lo escribe. En el MVP se juntan varias fases antes de salir; en mantenimiento, una entrega aprobada puede salir el mismo día.</dd>
+        <dt>Se detiene si</dt><dd><ul><li>Hay una entrega abierta.</li><li>Alguna fase incluida no está Aprobada.</li><li>Alguna prueba automática falla.</li></ul></dd>
+        <dt>Qué hace</dt><dd><ul><li>Muestra qué va a salir y pide un sí explícito.</li><li>Lleva <code>revision</code> a <code>main</code> con el tag <code>prod-AAAA-MM-DD</code>.</li><li>Despliega y corre la prueba de humo.</li></ul></dd>
+        <dt>Si el humo falla</dt><dd>Vuelve al tag anterior y abre una observación que Bloquea. Las fases siguen Aprobadas, no En producción.</dd>
+      </dl>
+    </div>
+
+    <div class="ficha">
+      <div class="cab"><h3>/urgencia</h3><span>Arregla algo roto en producción</span></div>
+      <dl>
+        <dt>Cuándo</dt><dd>Solo si producción está rota. Todo lo demás va por el circuito normal.</dd>
+        <dt>Qué hace</dt><dd><ul><li>Registra el problema como observación de tipo Error que Bloquea.</li><li>Abre una rama <code>hotfix/</code> desde <code>main</code>.</li><li>Escribe primero la prueba que falla y después el arreglo más chico posible.</li><li>Le muestra al OO qué cambió y pide su aprobación. Sin un sí, no sigue.</li><li>Sale a producción con tag y prueba de humo, y lleva el arreglo a <code>develop</code>.</li></ul></dd>
+        <dt>No toca</dt><dd>La entrega abierta. El arreglo llega a revisión con la entrega siguiente, donde QA lo verifica.</dd>
+      </dl>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Lo que se hace sin comando</h2>
+  <div class="tbl"><table>
+    <tr><th>Qué</th><th>Quién</th><th>Dónde</th></tr>
+    <tr><td>Marcar “Anda bien”, “Observo”, aprobar una etapa o cerrar una entrega</td><td>QA y OO</td><td>En el artifact</td></tr>
+    <tr><td>Contar qué se vio y adjuntar una captura</td><td>QA</td><td>En el artifact, debajo de “Observo”</td></tr>
+    <tr><td>Editar el funcional mientras no esté Aprobado</td><td>Analista</td><td>En el artifact, “Editar el texto”, o conversando con Claude Code</td></tr>
+    <tr><td>Agregar una pantalla y cargarle la imagen, pegándola con Ctrl+V o eligiendo un archivo, mientras la etapa no esté Aprobada</td><td>Analista u OO</td><td>En el artifact, Definición → 2. Pantallas</td></tr>
+    <tr><td>Agregar un pedido nuevo</td><td>Cualquiera</td><td>En el artifact, pestaña Backlog</td></tr>
+    <tr><td>Construir una fase o corregir una observación</td><td>Desarrollo + Claude Code</td><td>En Claude Code, rama <code>develop</code>, pidiéndolo con palabras</td></tr>
+    <tr><td>Escribir el diario del día</td><td>Claude Code</td><td>Al terminar cada sesión, en <code>docs/avances/</code></td></tr>
+  </table></div>
+  <p class="lede">Además, Claude Code pide confirmación antes de cualquier push, merge, tag o cambio sobre <code>main</code>, y tiene bloqueado el push forzado.</p>
+</section>
+
+<section>
+  <h2>Reglas que no se negocian</h2>
+  <ol class="rules">
+    <li><div><b>Solo personas aprueban.</b> <span>Claude Code nunca aprueba, cierra ni pasa a producción por su cuenta.</span></div></li>
+    <li><div><b>Una entrega abierta a la vez.</b> <span>Mientras está abierta, revisión no se toca.</span></div></li>
+    <li><div><b>Una entrega cerrada no se reabre.</b> <span>Lo pendiente pasa a la próxima.</span></div></li>
+    <li><div><b>Cada paso del guion se entiende solo.</b> <span>Qué se vio, qué cambió, qué hacer y qué esperar.</span></div></li>
+    <li><div><b>El guion trae solo lo que la máquina no puede probar.</b></div></li>
+    <li><div><b>Toda decisión va al funcional en el mismo commit.</b></div></li>
+    <li><div><b>Error significa test primero.</b> <span>También en una urgencia.</span></div></li>
+    <li><div><b>Toda salida a producción lleva tag.</b> <span>Si el humo falla, se vuelve al anterior.</span></div></li>
+    <li><div><b>Sin burocracia.</b> <span>Las excepciones se anotan en el diario en vez de prohibirse.</span></div></li>
+  </ol>
+</section>
+
+<section>
+  <h2>Qué falta confirmar</h2>
+  <div class="aviso">
+    <h3>Ningún comando se ejecutó todavía en un proyecto real</h3>
+    <p>La primera corrida de <code>/iniciar-proyecto</code> va a ser la prueba. Lo descrito acá es lo que cada comando tiene escrito que debe hacer.</p>
+  </div>
+  <div class="aviso">
+    <h3>Decisiones propuestas por Claude, pendientes de la confirmación de Claudio</h3>
+    <ul>
+      <li>“No probado” no tiene casilla: es un paso sin marcar al cierre.</li>
+      <li>La marca de aprobación explícita la pone Desarrollo al registrar la decisión.</li>
+      <li>La urgencia tiene comando propio y necesita la aprobación del OO.</li>
+      <li>Existe el comando <code>/etapa</code>, que no estaba en la lista original de seis.</li>
+      <li>Una fase pasa a Aprobada cuando no le quedan observaciones abiertas ni pasos No probados, sea cual sea la casilla de cierre.</li>
+      <li>Si marcar el cierre de una entrega debe bloquear las casillas de los pasos. Hoy no las bloquea.</li>
+      <li>El contenido de la lista de comprobación del Setup, y que la apruebe Desarrollo en lugar del OO.</li>
+    </ul>
+  </div>
+</section>
+</div>
+</body></html>
