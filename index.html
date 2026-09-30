@@ -102,6 +102,8 @@ td b{font-weight:600;}
 .rules li span{color:var(--muted);}
 .rules li>div{min-width:0;}
 code,.id{font-family:var(--mono); font-size:.88em;}
+a{color:var(--dev); text-underline-offset:2px;}
+.ir{margin-top:14px; font-weight:600;}
 @media (max-width:560px){.srow{grid-template-columns:1fr}.note{grid-column:1}.node{grid-template-columns:1fr; gap:2px}}
 </style>
 
@@ -110,6 +112,7 @@ code,.id{font-family:var(--mono); font-size:.88em;}
   <div class="asof">Propuesta del 30/09/2026 · reemplaza a la v2 · solo proyectos nuevos</div>
   <h1>Ciclo de desarrollo v3</h1>
   <p class="lede">Cómo trabajamos desde el funcional hasta producción. Un repo plantilla que se clona, un único artifact por proyecto que acompaña todo el ciclo, y seis etapas: las cinco de siempre más el Setup del entorno.</p>
+  <p class="ir"><a href="https://cdruizdiaz.github.io/metodologia_desarrollo/comandos/">Guía de comandos: cuándo y cómo se usa cada uno →</a></p>
   <div class="roles" aria-label="Roles">
     <div class="role"><i class="dot" style="background:var(--oo)"></i><div><b>OO · Analista · QA</b> <span>decide, define, prueba y aprueba</span></div></div>
     <div class="role"><i class="dot" style="background:var(--dev)"></i><div><b>Desarrollo</b> <span>arquitectura, programación y pruebas automáticas</span></div></div>
@@ -402,6 +405,7 @@ code,.id{font-family:var(--mono); font-size:.88em;}
     <tr><td><code>/pasar-a-produccion</code></td><td>Verifica que las fases estén Aprobadas, pide confirmación, hace merge, tag y prueba de humo</td><td>Con fases aprobadas</td></tr>
     <tr><td><code>/urgencia</code></td><td>Abre la rama desde <code>main</code>, test primero, y registra la OBS</td><td>Producción rota</td></tr>
   </table></div>
+  <p class="ir"><a href="https://cdruizdiaz.github.io/metodologia_desarrollo/comandos/">Ver la Guía de comandos, con el recorrido completo y una ficha por comando →</a></p>
 </section>
 
 <section>
