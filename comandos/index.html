@@ -136,7 +136,7 @@ tr:last-child td{border-bottom:none;}
 
     <div class="tramo">
       <h3>Arranque · una sola vez</h3>
-      <div class="paso devp"><div class="q"><i class="dot d-d"></i>Desarrollo</div><div class="t">Clona el repo plantilla y abre Claude Code en esa carpeta.</div><div class="c"><span class="sin">sin comando</span></div></div>
+      <div class="paso devp"><div class="q"><i class="dot d-d"></i>Desarrollo</div><div class="t">Clona el repo plantilla en una carpeta nueva y abre Claude Code ahí.</div><div class="c"><span class="sin">sin comando</span></div></div>
       <div class="paso claude"><div class="q"><i class="dot d-k"></i>Claude Code</div><div class="t">Pregunta nombre, descripción y roles. Crea el artifact, las ramas y carga la etapa 1 en Borrador.</div><div class="c"><span class="cmd">/iniciar-proyecto</span></div></div>
       <div class="paso devp"><div class="q"><i class="dot d-d"></i>Desarrollo</div><div class="t">Comparte el artifact con quienes van a marcar casillas.</div><div class="c"><span class="sin">sin comando</span></div></div>
     </div>
@@ -192,7 +192,7 @@ tr:last-child td{border-bottom:none;}
       <dl>
         <dt>Cuándo</dt><dd>Una sola vez, apenas se clona la plantilla.</dd>
         <dt>Pregunta</dt><dd>Nombre del proyecto, una o dos frases sobre qué es, y quién es OO, Analista, QA y Desarrollo.</dd>
-        <dt>Qué hace</dt><dd><ul><li>Prepara el repo con las ramas <code>main</code>, <code>develop</code> y <code>revision</code>.</li><li>Publica el artifact del proyecto y guarda su enlace en <code>CLAUDE.md</code>.</li><li>Carga la etapa 1 (Funcional) en Borrador.</li><li>Abre el diario y hace el primer commit.</li></ul></dd>
+        <dt>Qué hace</dt><dd><ul><li>Si la carpeta se clonó de la plantilla, la desconecta de ese repo y arranca el historial de cero, con tu confirmación.</li><li>Prepara el repo con las ramas <code>main</code>, <code>develop</code> y <code>revision</code>.</li><li>Publica el artifact del proyecto y guarda su enlace en <code>CLAUDE.md</code>.</li><li>Carga la etapa 1 (Funcional) en Borrador.</li><li>Abre el diario y hace el primer commit.</li></ul></dd>
         <dt>Se detiene si</dt><dd>El proyecto ya tiene un artifact.</dd>
         <dt>Después</dt><dd>Escribir el funcional. Cuando esté listo para revisar, <code>/etapa</code>.</dd>
       </dl>
