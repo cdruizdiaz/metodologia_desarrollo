@@ -1,0 +1,417 @@
+<title>Ciclo de desarrollo v3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: una columna de lectura de 1000px; diagramas y tablas en paneles con scroll propio. */
+:root{
+  --bg:#F4F5F8; --panel:#FFFFFF; --lane:#EAECF1; --fg:#1A1E27; --muted:#5B6474; --line:#C9CED8;
+  --oo:#B8336A; --dev:#2F5BD3; --cc:#A86A10; --ok:#2E7D4F; --soft:#F0F1F5;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Public Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11141A; --panel:#1A1E27; --lane:#161A21; --fg:#E6E9EF; --muted:#9AA3B2; --line:#343B48;
+    --oo:#F07AA8; --dev:#86A3F7; --cc:#E3AE52; --ok:#6BCB93; --soft:#20252F; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11141A; --panel:#1A1E27; --lane:#161A21; --fg:#E6E9EF; --muted:#9AA3B2; --line:#343B48;
+  --oo:#F07AA8; --dev:#86A3F7; --cc:#E3AE52; --ok:#6BCB93; --soft:#20252F; color-scheme:dark;
+}
+body{background:var(--bg); color:var(--fg); font:15px/1.55 var(--body); padding-inline:16px; padding-block:28px 56px;}
+.wrap{max-width:1000px; margin:0 auto; display:flex; flex-direction:column; gap:44px;}
+h1{font:700 clamp(28px,4vw,40px)/1.1 var(--display); margin:0 0 8px; letter-spacing:-.01em;}
+h2{font:700 21px/1.2 var(--display); margin:0 0 6px; text-wrap:balance;}
+h3{font:700 15px/1.3 var(--display); margin:0 0 4px;}
+p{margin:0; max-width:70ch;}
+.lede{color:var(--muted);}
+.asof{font:500 12px var(--mono); color:var(--muted); margin-bottom:10px;}
+.roles{display:flex; flex-wrap:wrap; gap:10px 28px; margin-top:18px;}
+.role{display:flex; gap:10px; align-items:baseline;}
+.dot{width:10px; height:10px; border-radius:50%; flex:none; transform:translateY(1px);}
+.role b{font-weight:600;}
+.role span{color:var(--muted);}
+figure{margin:0;}
+.scroll{overflow-x:auto; margin-top:14px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px;}
+svg{display:block; width:100%; min-width:760px; height:auto; color:var(--fg);}
+figcaption{color:var(--muted); font-size:14px; margin-top:10px; max-width:75ch;}
+.bx{fill:var(--panel); stroke:var(--line); stroke-width:1.2;}
+.bx-hi{fill:var(--panel); stroke:var(--oo); stroke-width:2;}
+.lane{fill:var(--lane);}
+.t{fill:var(--fg); font:600 14px var(--display);}
+.s{fill:var(--muted); font:12px var(--body);}
+.m{fill:var(--muted); font:500 11.5px var(--mono);}
+.lbl{fill:var(--fg); font:600 11.5px var(--body);}
+.hd{fill:var(--fg); font:700 15px var(--display);}
+.ln{stroke:currentColor; stroke-width:1.4; fill:none;}
+.dash{stroke:var(--muted); stroke-width:1.4; fill:none; stroke-dasharray:5 4;}
+.obs{stroke:var(--oo); stroke-width:1.6; fill:none;}
+.apr{stroke:var(--ok); stroke-width:1.8; fill:none;}
+.c-o{fill:var(--oo);} .c-d{fill:var(--dev);} .c-k{fill:var(--cc);}
+.tx-o{fill:var(--oo); font:600 11.5px var(--body);}
+.tx-ok{fill:var(--ok); font:600 11.5px var(--body);}
+.tbl{overflow-x:auto; margin-top:14px;}
+table{border-collapse:collapse; width:100%; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden; font-size:14px;}
+th,td{padding:10px 12px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line);}
+th{font:600 13px var(--body); color:var(--muted); background:var(--soft);}
+tr:last-child td{border-bottom:none;}
+td b{font-weight:600;}
+.tab{margin-top:14px; background:var(--panel); border:1px solid var(--line); border-radius:12px; overflow:hidden;}
+.tabbar{display:flex; gap:2px; padding:8px 10px 0; background:var(--soft); border-bottom:1px solid var(--line); overflow-x:auto;}
+.tabbar span{font-size:12.5px; padding:6px 10px; border-radius:8px 8px 0 0; color:var(--muted); white-space:nowrap;}
+.tabbar span.on{background:var(--panel); color:var(--fg); font-weight:600; border:1px solid var(--line); border-bottom-color:var(--panel); margin-bottom:-1px;}
+.parts{padding:16px 18px; display:grid; gap:10px;}
+.part{display:grid; grid-template-columns:28px 1fr; gap:10px; align-items:start;}
+.part>div{min-width:0;}
+.num{font:600 12px var(--mono); color:var(--muted); padding-top:2px;}
+.part p{color:var(--muted); font-size:14px;}
+.part h3{font-size:14.5px;}
+.mock{margin-top:8px; border:1px solid var(--line); border-radius:10px; overflow-x:auto;}
+.mock table{border:none; border-radius:0; font-size:13px; min-width:640px;}
+.ctx p{max-width:none; color:var(--fg); font-size:13px;}
+.ctx p+p{margin-top:4px;}
+.ctx .id{color:var(--muted);}
+.box{display:flex; flex-direction:column; gap:3px; white-space:nowrap; font-weight:600;}
+.box .x{color:var(--oo);}
+.tree{margin-top:14px; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 18px; display:grid; gap:0;}
+.node{display:grid; grid-template-columns:minmax(170px,240px) 1fr; gap:14px; padding:8px 0; border-bottom:1px dashed var(--line);}
+.node:last-child{border-bottom:none;}
+.node .n{font-weight:600; min-width:0; overflow-wrap:anywhere;}
+.node .d{color:var(--muted); font-size:14px; min-width:0;}
+.node.sub .n{padding-left:22px; font-weight:500; position:relative;}
+.node.sub .n::before{content:"└"; position:absolute; left:6px; color:var(--muted);}
+.tag{display:inline-block; font:600 11px var(--body); padding:1px 7px; border-radius:999px; border:1px solid var(--dev); color:var(--dev); margin-left:6px; vertical-align:1px; white-space:nowrap;}
+.tag.o{border-color:var(--oo); color:var(--oo);}
+.states{display:grid; gap:14px; margin-top:14px;}
+.srow{display:grid; grid-template-columns:130px 1fr; gap:12px; align-items:start; padding:14px 16px; background:var(--panel); border:1px solid var(--line); border-radius:12px;}
+.srow h3{margin:3px 0 0;}
+.chain{display:flex; flex-wrap:wrap; gap:6px 4px; align-items:center;}
+.chip{font-size:13px; padding:3px 10px; border-radius:999px; border:1px solid var(--line); white-space:nowrap;}
+.chip.h{border-color:var(--oo); color:var(--oo); font-weight:600;}
+.arr{color:var(--muted); font-size:13px;}
+.note{grid-column:2; color:var(--muted); font-size:13px;}
+.rules{margin:14px 0 0; padding:0; list-style:none; counter-reset:r; display:grid; gap:10px;}
+.rules li{counter-increment:r; display:grid; grid-template-columns:28px 1fr; gap:10px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:10px 14px;}
+.rules li::before{content:counter(r); font:600 13px var(--mono); color:var(--oo);}
+.rules li span{color:var(--muted);}
+.rules li>div{min-width:0;}
+code,.id{font-family:var(--mono); font-size:.88em;}
+@media (max-width:560px){.srow{grid-template-columns:1fr}.note{grid-column:1}.node{grid-template-columns:1fr; gap:2px}}
+</style>
+
+<div class="wrap">
+<header>
+  <div class="asof">Propuesta del 30/09/2026 · reemplaza a la v2 · solo proyectos nuevos</div>
+  <h1>Ciclo de desarrollo v3</h1>
+  <p class="lede">Cómo trabajamos desde el funcional hasta producción. Un repo plantilla que se clona, un único artifact por proyecto que acompaña todo el ciclo, y seis etapas: las cinco de siempre más el Setup del entorno.</p>
+  <div class="roles" aria-label="Roles">
+    <div class="role"><i class="dot" style="background:var(--oo)"></i><div><b>OO · Analista · QA</b> <span>decide, define, prueba y aprueba</span></div></div>
+    <div class="role"><i class="dot" style="background:var(--dev)"></i><div><b>Desarrollo</b> <span>arquitectura, programación y pruebas automáticas</span></div></div>
+    <div class="role"><i class="dot" style="background:var(--cc)"></i><div><b>Claude Code</b> <span>prepara, registra y responde; nunca aprueba ni cierra</span></div></div>
+  </div>
+</header>
+
+<section>
+  <h2>Qué cambia respecto de la v2</h2>
+  <p class="lede">Las etapas, los roles y el circuito siguen igual. Esto es lo nuevo; en el resto de la página aparece marcado <span class="tag" style="margin-left:0">v3</span>.</p>
+  <ol class="rules">
+    <li><div><b>Un solo artifact por proyecto.</b> <span>Nace con el funcional y crece con cada etapa. Cada entrega es una pestaña nueva del mismo artifact.</span></div></li>
+    <li><div><b>Camino de urgencia.</b> <span>Si producción se rompe, se arregla desde <code>main</code> sin tocar la entrega abierta.</span></div></li>
+    <li><div><b>Decisiones con aprobación explícita.</b> <span>Las difíciles de revertir no se aceptan por silencio.</span></div></li>
+    <li><div><b>Producción con versión y vuelta atrás.</b> <span>Cada salida lleva un tag; si la prueba de humo falla, se vuelve al anterior.</span></div></li>
+    <li><div><b>Entrega bloqueada.</b> <span>Si algo impide seguir probando, se cierra con observaciones y lo no probado pasa a la siguiente.</span></div></li>
+    <li><div><b>El backlog se ordena al cerrar.</b> <span>En la misma pasada del cierre, el OO da destino a los pedidos nuevos.</span></div></li>
+    <li><div><b>El repo guarda un espejo.</b> <span>Al cerrar cada entrega, Claude Code copia observaciones, decisiones y estados a <code>docs/estado/</code>.</span></div></li>
+    <li><div><b>Etapa de Setup.</b> <span>Entre la arquitectura y el plan: repo remoto, dependencias y los tres ambientes andando antes de construir.</span></div></li>
+    <li><div><b>Las reglas las aplica la herramienta.</b> <span>Claude Code no puede tocar <code>main</code> sin tu confirmación, y la rama está protegida en GitHub.</span></div></li>
+  </ol>
+</section>
+
+<section>
+  <h2>Cómo arranca un proyecto <span class="tag">v3</span></h2>
+  <p class="lede">Tres pasos desde cero. A partir de ahí, todo pasa en el artifact.</p>
+  <div class="states">
+    <div class="srow"><h3>1 · Clonar</h3><div><p>Se clona el repo plantilla. Trae <code>CLAUDE.md</code>, las convenciones, las plantillas y los comandos. No trae stack: eso se decide en la etapa 3.</p></div></div>
+    <div class="srow"><h3>2 · Iniciar</h3><div><p>En Claude Code se corre <code>/iniciar-proyecto</code>. Pregunta el nombre y quién cumple cada rol, crea el artifact del proyecto y guarda su enlace en el repo.</p></div></div>
+    <div class="srow"><h3>3 · Funcional</h3><div><p>El artifact nace con Inicio y Definición, abierto en la etapa 1. El Analista escribe el funcional ahí, con ayuda de Claude Code, y el OO lo aprueba con una casilla.</p></div></div>
+  </div>
+</section>
+
+<section>
+  <h2>Las seis etapas</h2>
+  <p class="lede">Cada etapa arranca cuando se aprueba la anterior. Lo que se decide durante la construcción vuelve al funcional.</p>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 960 256" role="img" aria-label="Seis etapas en secuencia: funcional, pantallas, arquitectura, setup, plan de fases y construcción; el OO aprueba cada paso salvo el setup, que lo aprueba Desarrollo, y las decisiones vuelven al funcional.">
+      <defs>
+        <marker id="a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+        <marker id="a1m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+      </defs>
+      <g>
+        <rect class="bx" x="16" y="52" width="140" height="124" rx="10"/>
+        <text class="m" x="30" y="76">1</text><text class="t" x="44" y="77">Funcional</text>
+        <text class="s" x="30" y="100">qué hace: reglas,</text><text class="s" x="30" y="116">pantallas y mensajes</text>
+        <circle class="c-o" cx="34" cy="155" r="5"/><text class="lbl" x="45" y="159">Analista</text>
+      </g>
+      <g>
+        <rect class="bx" x="174" y="52" width="140" height="124" rx="10"/>
+        <text class="m" x="188" y="76">2</text><text class="t" x="202" y="77">Pantallas</text>
+        <text class="s" x="188" y="100">un PNG por pantalla,</text><text class="s" x="188" y="116">con código (P01…)</text>
+        <circle class="c-o" cx="192" cy="155" r="5"/><text class="lbl" x="203" y="159">Analista u OO</text>
+      </g>
+      <g>
+        <rect class="bx" x="332" y="52" width="140" height="124" rx="10"/>
+        <text class="m" x="346" y="76">3</text><text class="t" x="360" y="77">Arquitectura</text>
+        <text class="s" x="346" y="100">stack, estándares</text><text class="s" x="346" y="116">y lo riesgoso</text>
+        <circle class="c-d" cx="350" cy="155" r="5"/><circle class="c-k" cx="362" cy="155" r="5"/><text class="lbl" x="373" y="159">Desarrollo + CC</text>
+      </g>
+      <g>
+        <rect class="bx" style="stroke:var(--dev)" x="490" y="52" width="140" height="124" rx="10"/>
+        <text class="m" x="504" y="76">4</text><text class="t" x="518" y="77">Setup</text>
+        <text class="s" x="504" y="100">repo, dependencias</text><text class="s" x="504" y="116">y tres ambientes</text>
+        <circle class="c-d" cx="508" cy="155" r="5"/><circle class="c-k" cx="520" cy="155" r="5"/><text class="lbl" x="531" y="159">Desarrollo + CC</text>
+      </g>
+      <g>
+        <rect class="bx" x="648" y="52" width="140" height="124" rx="10"/>
+        <text class="m" x="662" y="76">5</text><text class="t" x="676" y="77">Plan de fases</text>
+        <text class="s" x="662" y="100">fases comprobables,</text><text class="s" x="662" y="116">con criterio de fin</text>
+        <circle class="c-d" cx="666" cy="155" r="5"/><circle class="c-k" cx="678" cy="155" r="5"/><text class="lbl" x="689" y="159">Desarrollo + CC</text>
+      </g>
+      <g>
+        <rect class="bx-hi" style="stroke:var(--fg)" x="806" y="52" width="140" height="124" rx="10"/>
+        <text class="m" x="820" y="76">6</text><text class="t" x="834" y="77">Construcción</text>
+        <text class="s" x="820" y="100">fase por fase,</text><text class="s" x="820" y="116">en entregas</text>
+        <circle class="c-o" cx="824" cy="155" r="5"/><circle class="c-d" cx="836" cy="155" r="5"/><circle class="c-k" cx="848" cy="155" r="5"/><text class="lbl" x="859" y="159">todos ↓</text>
+      </g>
+      <g>
+        <line class="ln" x1="156" y1="114" x2="172" y2="114" marker-end="url(#a1)"/>
+        <text class="tx-ok" x="165" y="40" text-anchor="middle">✓ OO</text>
+        <line class="ln" x1="314" y1="114" x2="330" y2="114" marker-end="url(#a1)"/>
+        <text class="tx-ok" x="323" y="40" text-anchor="middle">✓ OO</text>
+        <line class="ln" x1="472" y1="114" x2="488" y2="114" marker-end="url(#a1)"/>
+        <text class="tx-ok" x="481" y="40" text-anchor="middle">✓ OO</text>
+        <line class="ln" x1="630" y1="114" x2="646" y2="114" marker-end="url(#a1)"/>
+        <text class="tx-ok" x="639" y="40" text-anchor="middle">✓ Desarrollo</text>
+        <line class="ln" x1="788" y1="114" x2="804" y2="114" marker-end="url(#a1)"/>
+        <text class="tx-ok" x="797" y="40" text-anchor="middle">✓ OO</text>
+      </g>
+      <path class="dash" d="M876,176 V212 H86 V180" marker-end="url(#a1m)"/>
+      <text class="s" x="476" y="236" text-anchor="middle">Decisiones (<tspan style="font-family:var(--mono)">DEC-NN</tspan>) y pedidos del backlog vuelven al funcional, en el mismo commit que el cambio</text>
+    </svg>
+    </div>
+    <figcaption>Las etapas 1 a 5 se hacen una vez, al empezar, y cada una suma su parte al artifact. La 6 se repite entrega por entrega. El Setup es la única etapa que aprueba Desarrollo: termina cuando una página mínima recorre desarrollo, testing y producción, y sin eso no se empieza a construir. Un pedido nuevo no entra en la fase en curso: va al backlog y el OO le da destino al cerrar la entrega.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>El circuito de una entrega</h2>
+  <p class="lede">Una fase es qué se construye; una entrega es lo que hay para probar ahora. Cada columna es un ambiente.</p>
+  <figure>
+    <div class="scroll">
+    <svg viewBox="0 0 960 500" role="img" aria-label="Circuito de una entrega: en develop se construye y se prueba automáticamente; se publica en revisión como pestaña E-NN; QA prueba con casillas; lo observado vuelve a develop con su número; al aprobar, desarrollo sigue con la fase siguiente del plan y las fases aprobadas pueden pasar a producción con un tag. Una urgencia en producción se arregla desde main sin pasar por la entrega abierta.">
+      <defs>
+        <marker id="a2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="currentColor"/></marker>
+        <marker id="a2s" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--oo)"/></marker>
+        <marker id="a2o" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--ok)"/></marker>
+        <marker id="a2m" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--muted)"/></marker>
+      </defs>
+      <rect class="lane" x="8" y="8" width="300" height="428" rx="10"/>
+      <rect class="lane" x="322" y="8" width="330" height="428" rx="10"/>
+      <rect class="lane" x="666" y="8" width="286" height="428" rx="10"/>
+      <text class="hd" x="24" y="36">develop</text><text class="s" x="24" y="54">trabajo diario</text>
+      <text class="hd" x="338" y="36">revisión</text><text class="s" x="338" y="54">congelada · una entrega abierta a la vez</text>
+      <text class="hd" x="682" y="36">producción</text><text class="s" x="682" y="54">solo fases aprobadas</text>
+
+      <rect class="bx" x="28" y="76" width="260" height="84" rx="10"/>
+      <text class="t" x="42" y="100">Construir o corregir</text>
+      <text class="s" x="42" y="121">fase nueva u observaciones abiertas</text>
+      <circle class="c-d" cx="46" cy="142" r="5"/><circle class="c-k" cx="58" cy="142" r="5"/><text class="lbl" x="69" y="146">Desarrollo + Claude Code</text>
+      <rect class="bx" x="28" y="210" width="260" height="84" rx="10"/>
+      <text class="t" x="42" y="234">Pruebas automáticas</text>
+      <text class="s" x="42" y="255">5 navegadores · un test por error</text>
+      <text class="m" x="42" y="276">@OBS-014</text>
+      <line class="ln" x1="110" y1="160" x2="110" y2="208" marker-end="url(#a2)"/>
+      <text class="lbl" x="102" y="189" text-anchor="end">test primero</text>
+      <line class="ln" x1="206" y1="210" x2="206" y2="162" marker-end="url(#a2)"/>
+      <text class="lbl" x="214" y="189">si falla</text>
+
+      <rect class="bx" x="342" y="210" width="290" height="84" rx="10" style="stroke:var(--cc)"/>
+      <text class="t" x="356" y="234">Pestaña <tspan style="font-family:var(--mono);font-weight:500">E-12</tspan> en el artifact</text>
+      <text class="s" x="356" y="255">qué trae · ya verificado · guion con contexto</text>
+      <circle class="c-k" cx="360" cy="276" r="5"/><text class="lbl" x="371" y="280">Claude Code la arma</text>
+      <line class="ln" x1="288" y1="252" x2="340" y2="252" marker-end="url(#a2)"/>
+      <text class="lbl" x="314" y="240" text-anchor="middle">merge</text>
+
+      <rect class="bx-hi" x="342" y="330" width="290" height="84" rx="10"/>
+      <text class="t" x="356" y="354">QA prueba y el OO cierra</text>
+      <text class="s" x="356" y="375">solo lo que la máquina no puede</text>
+      <text class="lbl" x="356" y="398">☐ Anda bien    ☐ Observo</text>
+      <line class="ln" x1="487" y1="294" x2="487" y2="328" marker-end="url(#a2)"/>
+
+      <rect class="bx" x="686" y="76" width="246" height="84" rx="10" style="stroke:var(--oo)"/>
+      <text class="t" x="700" y="100">Urgencia en producción</text>
+      <text class="s" x="700" y="121">rama desde main · test primero</text>
+      <circle class="c-d" cx="704" cy="142" r="5"/><circle class="c-k" cx="716" cy="142" r="5"/><text class="lbl" x="727" y="146">después se lleva a develop</text>
+      <line class="apr" x1="900" y1="160" x2="900" y2="328" marker-end="url(#a2o)"/>
+      <text class="tx-ok" x="892" y="236" text-anchor="end">☑ OO aprueba</text>
+      <text class="s" x="892" y="252" text-anchor="end">queda como OBS que Bloquea</text>
+
+      <rect class="bx" x="686" y="330" width="246" height="84" rx="10" style="stroke:var(--ok)"/>
+      <text class="t" x="700" y="354">Pasar a producción</text>
+      <text class="s" x="700" y="375">merge a main · tag · prueba de humo</text>
+      <circle class="c-d" cx="704" cy="396" r="5"/><text class="lbl" x="715" y="400">Desarrollo</text>
+      <line class="apr" x1="632" y1="372" x2="684" y2="372" marker-end="url(#a2o)"/>
+      <text class="tx-ok" x="686" y="316">☑ Apruebo esta entrega</text>
+      <text class="s" x="686" y="430">falla el humo → tag anterior + OBS</text>
+
+      <path class="obs" d="M420,414 V456 H16 V118 H26" marker-end="url(#a2s)"/>
+      <text class="tx-o" x="160" y="450" text-anchor="middle">☑ Observo → <tspan style="font-family:var(--mono)">OBS-NNN</tspan> → vuelve a develop</text>
+      <path class="apr" d="M540,414 V482 H4 V100 H26" marker-end="url(#a2o)"/>
+      <text class="tx-ok" x="160" y="476" text-anchor="middle">☑ Apruebo → sigue la fase siguiente del plan</text>
+      <path class="dash" d="M288,98 H560 V208" marker-end="url(#a2m)"/>
+      <text class="s" x="424" y="90" text-anchor="middle">decisión de desarrollo <tspan style="font-family:var(--mono)">DEC-NN</tspan></text>
+      <text class="s" x="568" y="140">se valida en</text><text class="s" x="568" y="156">la entrega</text><text class="s" x="568" y="172">siguiente</text>
+    </svg>
+    </div>
+    <figcaption>De la revisión salen tres caminos. Lo observado vuelve a develop con su número, y en la entrega siguiente aparece como paso de verificación con su contexto. Lo aprobado libera la fase siguiente del plan, que se construye en develop. Y las fases aprobadas pasan a producción cuando el OO lo decide: en el MVP se juntan varias antes de salir; en mantenimiento, una entrega aprobada puede salir el mismo día. La entrega cerrada no se reabre. Si una observación que Bloquea impide seguir probando, la entrega se cierra con observaciones en ese momento y los pasos sin marcar pasan a la próxima como “No probado”. La urgencia es el único camino a producción que no pasa por una entrega, y también necesita la aprobación del OO.</figcaption>
+  </figure>
+</section>
+
+<section>
+  <h2>Cómo es la pestaña de una entrega</h2>
+  <p class="lede">Siempre las mismas siete partes, en el mismo orden. Cada paso del guion se entiende solo, sin ir a otra pestaña.</p>
+  <div class="tab" role="img" aria-label="Ejemplo de la pestaña de una entrega con sus siete partes y una fila del guion.">
+    <div class="tabbar"><span>Inicio</span><span class="on">E-12 · 23 sep · En revisión</span><span>Definición</span><span>Observaciones</span><span>Decisiones</span><span>Backlog</span><span>Cómo probar</span><span>Historial</span></div>
+    <div class="parts">
+      <div class="part"><span class="num">1</span><div><h3>Cómo usar esta pestaña</h3><p>Tres líneas fijas sobre las casillas.</p></div></div>
+      <div class="part"><span class="num">2</span><div><h3>Qué trae</h3><p>Fases que toca, observaciones corregidas, decisiones nuevas y el commit publicado.</p></div></div>
+      <div class="part"><span class="num">3</span><div><h3>Ya verificado automáticamente</h3><p>Qué pruebas pasaron y qué no se puede verificar desde acá: el iPhone real, la cuenta de Google real.</p></div></div>
+      <div class="part"><span class="num">4</span><div><h3>Guion para probar</h3><p>Solo lo que la máquina no puede. Una fila por paso:</p>
+        <div class="mock"><table>
+          <tr><th style="width:36%">Contexto</th><th>Qué hacer</th><th>Qué esperar</th><th>Resultado</th></tr>
+          <tr>
+            <td class="ctx"><p><b>OBS-006</b> <span class="id">· reabierta en E-11</span></p><p><b>Lo que viste:</b> en tu iPhone el video quedaba corrido a la derecha, con un bloque negro.</p><p><b>Qué cambió:</b> el reproductor se arma con la medida del video, no con la de la portada.</p></td>
+            <td>En tu iPhone, entrá a “Gestion mensual” del Colegio, noviembre. Abrí “Prueba video” y tocá Reproducir.</td>
+            <td>El video entero y centrado, con el mismo margen a los dos lados.</td>
+            <td><div class="box"><span>☐ Anda bien</span><span class="x">☐ Observo:</span></div></td>
+          </tr>
+        </table></div>
+        <p style="margin-top:8px">Un paso sin marcar al cierre queda “No probado” y vuelve en la entrega siguiente. <span class="tag">v3</span></p>
+      </div></div>
+      <div class="part"><span class="num">5</span><div><h3>Decisiones de desarrollo a validar</h3><p>Cada una con la casilla “No estoy de acuerdo”; sin marcar al cierre, queda aceptada. Las que llevan la marca <b>aprobación explícita</b> traen en cambio la casilla “Apruebo”, y sin marcar siguen A validar. <span class="tag">v3</span></p></div></div>
+      <div class="part"><span class="num">6</span><div><h3>Otras observaciones</h3><p>Casillas “Observo” para lo que no entra en ningún paso.</p></div></div>
+      <div class="part"><span class="num">7</span><div><h3>Cierre de la entrega</h3><p>Una sola casilla: “Apruebo esta entrega” o “Cierro con observaciones”. Vale como resultado de QA y decisión del OO. En la misma pasada, el OO da destino a los pedidos nuevos del backlog: a una fase, a una fase nueva o descartado. <span class="tag">v3</span></p></div></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>Observación, comentario y decisión</h2>
+  <p class="lede">Una observación genera trabajo y lleva número; un comentario no. Una decisión cambia cómo es el producto y siempre queda escrita en el funcional.</p>
+  <div class="tbl"><table>
+    <tr><th></th><th>Observación</th><th>Comentario</th><th>Decisión</th></tr>
+    <tr><td><b>Qué es</b></td><td>Algo que hay que arreglar o responder</td><td>Una aclaración o algo al pasar</td><td>Un cambio en cómo se ve o funciona</td></tr>
+    <tr><td><b>Cómo nace</b></td><td>Marcando ☐ Observo</td><td>Comentando sobre el artifact</td><td>De una observación de tipo Cambio, de un pedido o de Desarrollo</td></tr>
+    <tr><td><b>Número</b></td><td><code>OBS-NNN</code>, lo pone Claude Code</td><td>No lleva</td><td><code>DEC-NN</code></td></tr>
+    <tr><td><b>Dónde queda</b></td><td>Pestaña Observaciones, con la captura</td><td>En el hilo</td><td>Pestaña Decisiones y el funcional</td></tr>
+    <tr><td><b>Cómo termina</b></td><td>QA marca Anda bien al verificarla</td><td>—</td><td>Aceptada al cerrar la entrega, o pasa a observación</td></tr>
+  </table></div>
+  <p style="margin-top:12px" class="lede">Tipo de observación: <b>Error</b> (test primero, después el arreglo) · <b>Cambio</b> (se registra una DEC) · <b>Duda</b> (no se inventa: se pregunta). Gravedad: Bloquea · Normal · Menor.</p>
+  <p style="margin-top:8px" class="lede"><b>Aprobación explícita</b> <span class="tag" style="margin-left:0">v3</span> la llevan las decisiones que cuestan caro de revertir: modelo de datos, plata, seguridad y permisos, y borrado de datos. La marca la pone Desarrollo al registrar la decisión.</p>
+</section>
+
+<section>
+  <h2>Estados</h2>
+  <p class="lede">En rosa, los pasos que solo da una persona. Claude Code mueve todo lo demás.</p>
+  <div class="states">
+    <div class="srow">
+      <h3>Etapa 1 a 5</h3>
+      <div class="chain"><span class="chip">Borrador</span><span class="arr">→</span><span class="chip">En revisión</span><span class="arr">→</span><span class="chip h">Aprobada</span></div>
+      <p class="note">Con las mismas casillas Apruebo / Observo que una entrega.</p>
+    </div>
+    <div class="srow">
+      <h3>Fase</h3>
+      <div class="chain"><span class="chip">Planificada</span><span class="arr">→</span><span class="chip">En construcción</span><span class="arr">→</span><span class="chip">En revisión</span><span class="arr">→</span><span class="chip h">Aprobada</span><span class="arr">→</span><span class="chip">En producción</span></div>
+      <p class="note">Sigue En revisión mientras tenga observaciones abiertas o pasos No probados.</p>
+    </div>
+    <div class="srow">
+      <h3>Entrega</h3>
+      <div class="chain"><span class="chip">En preparación</span><span class="arr">→</span><span class="chip">En revisión</span><span class="arr">→</span><span class="chip h">Cerrada</span></div>
+      <p class="note">El estado va en el nombre de la pestaña: <span class="id">E-11 · 23 sep · Cerrada</span>. Cerrada, no se reabre.</p>
+    </div>
+    <div class="srow">
+      <h3>Observación</h3>
+      <div class="chain"><span class="chip">Abierta</span><span class="arr">→</span><span class="chip">Corregida</span><span class="arr">→</span><span class="chip h">Cerrada</span><span class="arr">· o</span><span class="chip">Descartada</span><span class="chip">Pospuesta</span></div>
+      <p class="note">Si sigue fallando vuelve a Abierta con el mismo número.</p>
+    </div>
+    <div class="srow">
+      <h3>Decisión</h3>
+      <div class="chain"><span class="chip">A validar</span><span class="arr">→</span><span class="chip h">Aceptada</span><span class="arr">· o</span><span class="chip">Pasa a observación</span></div>
+      <p class="note">Aceptada por silencio al cierre, salvo las de aprobación explícita, que necesitan la casilla marcada.</p>
+    </div>
+  </div>
+</section>
+
+<section>
+  <h2>El artifact del proyecto <span class="tag">v3</span></h2>
+  <p class="lede">Un solo artifact desde el primer día. Las personas trabajan ahí y Claude Code lo lee y lo escribe. Las pestañas aparecen a medida que el proyecto avanza.</p>
+  <div class="tree">
+    <div class="node"><span class="n">Inicio</span><span class="d">Acceso grande a lo que hay que mirar hoy: la etapa en revisión o la entrega abierta. Qué hay en cada ambiente, próximo paso, tabla de fases y cómo se usa el artifact.</span></div>
+    <div class="node"><span class="n">E-NN · fecha · En revisión <span class="tag o">desde la etapa 6</span></span><span class="d">La entrega abierta, siempre segunda en la barra. Cada entrega nueva es una pestaña nueva.</span></div>
+    <div class="node"><span class="n">Definición</span><span class="d">Las etapas 1 a 5, cada una con versión, estado y casillas Apruebo / Observo.</span></div>
+    <div class="node sub"><span class="n">1. Funcional</span><span class="d">Se escribe acá; aprobado, Claude Code lo copia al repo. Después cambia solo por decisiones.</span></div>
+    <div class="node sub"><span class="n">2. Pantallas</span><span class="d">Imágenes con su código (P01, C3…), que se pegan o se eligen acá mismo. Muestra qué pantallas del funcional no tienen imagen.</span></div>
+    <div class="node sub"><span class="n">3. Arquitectura</span><span class="d">Se escribe en el repo; acá, un resumen llano para que el OO apruebe. Incluye el stack elegido.</span></div>
+    <div class="node sub"><span class="n">4. Setup</span><span class="d">Lista de comprobación del entorno: repo remoto, dependencias, pruebas y los tres ambientes. La aprueba Desarrollo.</span></div>
+    <div class="node sub"><span class="n">5. Plan de fases</span><span class="d">Resumen del plan; de acá sale la tabla de fases de Inicio.</span></div>
+    <div class="node sub"><span class="n">Modelo de datos</span><span class="d">Diagrama entidad-relación que Claude Code actualiza en cada migración.</span></div>
+    <div class="node"><span class="n">Observaciones</span><span class="d">Una sola tabla del proyecto, con tipo, gravedad, estado y las capturas como evidencia.</span></div>
+    <div class="node"><span class="n">Decisiones</span><span class="d">Una sola tabla: qué se decidió, quién, estado, si pide aprobación explícita y qué sección del funcional cambia.</span></div>
+    <div class="node"><span class="n">Backlog</span><span class="d">Pedidos nuevos, con prioridad y destino. Se ordena al cerrar cada entrega.</span></div>
+    <div class="node"><span class="n">Cómo probar</span><span class="d">Dirección de revisión, cuentas de prueba, clientes de prueba y trucos.</span></div>
+    <div class="node"><span class="n">Historial</span><span class="d">Entregas cerradas y salidas a producción con su tag, agrupadas acá para que la barra no crezca sin fin.</span></div>
+  </div>
+</section>
+
+<section>
+  <h2>El repo plantilla <span class="tag">v3</span></h2>
+  <p class="lede">Lo que viene al clonar. Lo técnico vive acá; el artifact es la cara para las personas, y el repo guarda su espejo.</p>
+  <div class="tree">
+    <div class="node"><span class="n"><code>README.md</code></span><span class="d">Los tres pasos para arrancar.</span></div>
+    <div class="node"><span class="n"><code>CLAUDE.md</code></span><span class="d">Lo que Claude Code lee al empezar: roles, reglas, enlace al artifact y dónde está cada cosa.</span></div>
+    <div class="node"><span class="n"><code>docs/ciclo-convenciones.md</code></span><span class="d">Las reglas completas de este ciclo.</span></div>
+    <div class="node"><span class="n"><code>docs/funcional.md</code> y demás</span><span class="d">Funcional, pantallas, arquitectura, setup y plan de fases. Empiezan como plantillas vacías.</span></div>
+    <div class="node"><span class="n"><code>docs/estado/</code></span><span class="d">El espejo: observaciones, decisiones, backlog y estados, copiados al cerrar cada entrega.</span></div>
+    <div class="node"><span class="n"><code>docs/avances/</code></span><span class="d">El diario, un archivo por día: <code>avances_AAAA-MM-DD.txt</code>.</span></div>
+    <div class="node"><span class="n"><code>.claude/</code></span><span class="d">Los comandos del ciclo y los permisos que impiden tocar <code>main</code> sin confirmación.</span></div>
+    <div class="node"><span class="n"><code>tests/</code></span><span class="d">Las pruebas automáticas. La herramienta se elige en la etapa 3.</span></div>
+  </div>
+  <div class="tbl"><table>
+    <tr><th>Comando</th><th>Qué hace</th><th>Cuándo</th></tr>
+    <tr><td><code>/iniciar-proyecto</code></td><td>Crea el artifact y deja el repo listo para la etapa 1</td><td>Una vez, después de clonar</td></tr>
+    <tr><td><code>/etapa</code></td><td>Pone en revisión la etapa en curso (1 a 5) y, cuando se aprueba, la copia al repo y abre la siguiente</td><td>Durante la definición</td></tr>
+    <tr><td><code>/estado</code></td><td>Resume etapa, entrega abierta, observaciones y próximo paso</td><td>Al empezar cada sesión</td></tr>
+    <tr><td><code>/pasar-a-testing</code></td><td>Publica en revisión y arma la pestaña <code>E-NN</code> con sus siete partes</td><td>Cuando develop está listo para probar</td></tr>
+    <tr><td><code>/procesar-entrega</code></td><td>Lee las casillas, numera las OBS, actualiza estados y copia el espejo</td><td>Después de que el OO cierra</td></tr>
+    <tr><td><code>/pasar-a-produccion</code></td><td>Verifica que las fases estén Aprobadas, pide confirmación, hace merge, tag y prueba de humo</td><td>Con fases aprobadas</td></tr>
+    <tr><td><code>/urgencia</code></td><td>Abre la rama desde <code>main</code>, test primero, y registra la OBS</td><td>Producción rota</td></tr>
+  </table></div>
+</section>
+
+<section>
+  <h2>Reglas que no se negocian</h2>
+  <ol class="rules">
+    <li><div><b>Solo personas aprueban.</b> <span>Claude Code nunca aprueba una etapa ni una fase, nunca cierra una entrega ni una observación, y nunca pasa a producción algo sin aprobar. La herramienta se lo impide.</span></div></li>
+    <li><div><b>Una entrega abierta a la vez.</b> <span>Revisión no se toca mientras está abierta; un cambio nuevo va en la siguiente. La única excepción es una urgencia, y va por su propio camino.</span></div></li>
+    <li><div><b>Una entrega cerrada no se reabre.</b> <span>Lo pendiente y lo no probado pasan a la próxima.</span></div></li>
+    <li><div><b>Cada paso se entiende solo.</b> <span>Qué se vio, qué cambió, dónde arrancar y qué esperar. Los números son referencia, no explicación.</span></div></li>
+    <li><div><b>El guion trae solo lo que la máquina no puede probar.</b></div></li>
+    <li><div><b>Toda decisión va al funcional en el mismo commit.</b> <span>Las de Desarrollo se validan en la entrega siguiente; las difíciles de revertir, con aprobación explícita.</span></div></li>
+    <li><div><b>Error significa test primero.</b> <span>Primero una prueba que falla, después el arreglo. También en una urgencia.</span></div></li>
+    <li><div><b>Toda salida a producción lleva tag.</b> <span>Si la prueba de humo falla, se vuelve al tag anterior y se abre una observación.</span></div></li>
+    <li><div><b>Sin burocracia.</b> <span>Quien tiene varios roles hace una sola pasada, y las excepciones se anotan en vez de prohibirse.</span></div></li>
+  </ol>
+</section>
+</div>

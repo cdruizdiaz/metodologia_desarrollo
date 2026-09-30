@@ -1,0 +1,23 @@
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Editores
+.vscode/
+.idea/
+
+# Claude Code: ajustes personales
+.claude/settings.local.json
+
+# Secretos
+.env
+.env.*
+!.env.example
+
+# Dependencias y salidas (se ajusta en la etapa 3, al elegir el stack)
+node_modules/
+dist/
+build/
+coverage/
+test-results/
+playwright-report/

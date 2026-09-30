@@ -1,0 +1,574 @@
+<title>Proyecto sin nombre</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Public+Sans:wght@400;600&family=JetBrains+Mono:wght@500&display=swap">
+<style>
+/* Layout: una columna de 1000px; barra de pestañas arriba y una sola vista debajo.
+   Esta página no guarda contenido: todo se lee de la base del artifact (ver artifact/datos.md). */
+:root{
+  --bg:#F4F5F8; --panel:#FFFFFF; --fg:#1A1E27; --muted:#5B6474; --line:#C9CED8;
+  --oo:#B8336A; --dev:#2F5BD3; --cc:#A86A10; --ok:#2E7D4F; --soft:#F0F1F5;
+  --display:"Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body:"Public Sans", "Segoe UI", system-ui, sans-serif;
+  --mono:"JetBrains Mono", ui-monospace, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#11141A; --panel:#1A1E27; --fg:#E6E9EF; --muted:#9AA3B2; --line:#343B48;
+    --oo:#F07AA8; --dev:#86A3F7; --cc:#E3AE52; --ok:#6BCB93; --soft:#20252F; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11141A; --panel:#1A1E27; --fg:#E6E9EF; --muted:#9AA3B2; --line:#343B48;
+  --oo:#F07AA8; --dev:#86A3F7; --cc:#E3AE52; --ok:#6BCB93; --soft:#20252F; color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg); color:var(--fg); font:15px/1.55 var(--body); padding-inline:16px; padding-block:24px 56px;}
+.wrap{max-width:1000px; margin:0 auto; display:flex; flex-direction:column; gap:18px;}
+h1{font:700 clamp(26px,4vw,36px)/1.1 var(--display); margin:0; letter-spacing:-.01em;}
+h2{font:700 19px/1.2 var(--display); margin:0; text-wrap:balance;}
+h3{font:700 15px/1.3 var(--display); margin:0;}
+h4{font:600 12px var(--body); color:var(--muted); margin:0 0 2px; text-transform:uppercase; letter-spacing:.05em;}
+p{margin:0;}
+.asof{font:500 12px var(--mono); color:var(--muted);}
+.mut{color:var(--muted); font-size:14px;}
+code,.id{font-family:var(--mono); font-size:.88em;}
+.stack{display:flex; flex-direction:column; gap:14px; min-width:0;}
+.row{display:flex; flex-wrap:wrap; gap:8px 10px; align-items:center;}
+.card{background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:14px 16px; min-width:0;}
+.tabbar{display:flex; gap:2px; padding:8px 10px 0; background:var(--soft); border:1px solid var(--line); border-radius:12px 12px 0 0; overflow-x:auto;}
+.tabbar button{font:inherit; font-size:13px; padding:7px 11px; border-radius:8px 8px 0 0; color:var(--muted); background:none; border:1px solid transparent; border-bottom:none; white-space:nowrap; cursor:pointer;}
+.tabbar button[aria-selected="true"]{background:var(--bg); color:var(--fg); font-weight:600; border-color:var(--line);}
+.subbar{display:flex; flex-wrap:wrap; gap:6px;}
+button.btn, .subbar button{font:600 13px var(--body); padding:6px 12px; border-radius:999px; border:1px solid var(--line); background:var(--panel); color:var(--fg); cursor:pointer;}
+.subbar button[aria-pressed="true"]{border-color:var(--fg);}
+button.btn.go{border-color:var(--dev); color:var(--dev);}
+button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, summary:focus-visible{outline:2px solid var(--dev); outline-offset:2px;}
+button:disabled{opacity:.5; cursor:default;}
+.chip{display:inline-block; font-size:12.5px; padding:2px 9px; border-radius:999px; border:1px solid var(--line); white-space:nowrap;}
+.chip.h{border-color:var(--oo); color:var(--oo); font-weight:600;}
+.chip.ok{border-color:var(--ok); color:var(--ok); font-weight:600;}
+.chip.on{border-color:var(--fg); font-weight:600;}
+.tag{display:inline-block; font:600 11px var(--body); padding:1px 7px; border-radius:999px; border:1px solid var(--oo); color:var(--oo); white-space:nowrap;}
+.part{display:grid; grid-template-columns:26px 1fr; gap:10px;}
+.part>.stack{gap:8px;}
+.num{font:600 12px var(--mono); color:var(--muted); padding-top:3px;}
+.paso{border:1px solid var(--line); border-radius:10px; padding:12px 14px; display:grid; gap:10px; background:var(--panel); min-width:0;}
+.paso .ref{font-size:13px; color:var(--muted);}
+.paso .ref b{color:var(--fg);}
+.res{display:flex; flex-direction:column; gap:6px; border-top:1px dashed var(--line); padding-top:10px;}
+label.box{display:flex; gap:8px; align-items:center; font-weight:600; cursor:pointer; width:fit-content;}
+label.box.x{color:var(--oo);}
+label.box input{width:17px; height:17px; accent-color:var(--ok);}
+label.box.x input{accent-color:var(--oo);}
+textarea, input[type="text"], select{font:inherit; color:var(--fg); background:var(--bg); border:1px solid var(--line); border-radius:8px; padding:7px 9px; width:100%; max-width:100%;}
+textarea{min-height:64px; resize:vertical;}
+textarea.largo{min-height:420px; font:13px/1.5 var(--mono);}
+select{width:auto;}
+.caps{display:flex; flex-wrap:wrap; gap:8px;}
+.caps img{width:96px; height:96px; object-fit:cover; border-radius:8px; border:1px solid var(--line);}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:12px;}
+.grid figure{margin:0; display:grid; gap:6px;}
+.grid img, .grid .vacio{width:100%; aspect-ratio:4/3; object-fit:cover; border-radius:8px; border:1px solid var(--line); background:var(--soft);}
+.grid .vacio{display:grid; place-items:center; color:var(--muted); font-size:13px;}
+.grid figcaption{font-size:13px;}
+.grid{align-items:start;}
+.grid figure{min-width:0; grid-template-columns:minmax(0,1fr); align-content:start;}
+.grid .cuadro{display:block; width:100%; padding:0; border:none; background:none; color:inherit; font:inherit; cursor:pointer; border-radius:8px;}
+.grid figure.sel .cuadro{outline:2px solid var(--dev); outline-offset:2px;}
+.grid input[type="file"]{width:100%; min-width:0; font-size:12px; color:var(--muted);}
+.grid figcaption{overflow-wrap:anywhere;}
+.tbl{overflow-x:auto;}
+table{border-collapse:collapse; width:100%; font-size:14px;}
+th,td{padding:8px 10px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line);}
+th{font:600 12.5px var(--body); color:var(--muted);}
+tr:last-child td{border-bottom:none;}
+details{background:var(--panel); border:1px solid var(--line); border-radius:10px; min-width:0;}
+summary{padding:10px 14px; cursor:pointer; display:flex; flex-wrap:wrap; gap:6px 10px; align-items:center;}
+summary .ttl{flex:1 1 220px; min-width:0;}
+details>.stack{padding:0 14px 14px; gap:8px;}
+.md{min-width:0; overflow-wrap:anywhere;}
+.md>*:first-child{margin-top:0} .md>*:last-child{margin-bottom:0}
+.md p,.md ul,.md ol{margin:0 0 8px;} .md ul,.md ol{padding-left:22px;}
+.md h1,.md h2,.md h3{font:700 16px/1.3 var(--display); margin:16px 0 6px;}
+.md h1{font-size:20px;} .md h2{font-size:17px;}
+.md pre{overflow-x:auto; background:var(--soft); border-radius:8px; padding:10px; font:12.5px/1.5 var(--mono);}
+.md pre.mermaid{text-align:center;}
+.md pre.mermaid svg{max-width:100%; height:auto;}
+.md table{display:block; overflow-x:auto;}
+.md img{border-radius:8px;}
+.aviso{border:1px solid var(--cc); color:var(--cc); border-radius:10px; padding:10px 14px; font-weight:600;}
+.hoy{border:2px solid var(--oo);}
+</style>
+
+<div class="wrap">
+  <header class="stack" style="gap:4px">
+    <div class="asof" id="meta">Ciclo de desarrollo v3</div>
+    <h1 id="nombre">Proyecto</h1>
+  </header>
+  <p class="aviso" id="aviso" hidden></p>
+  <div>
+    <nav class="tabbar" id="tabs" role="tablist" aria-label="Pestañas del proyecto"></nav>
+  </div>
+  <main id="vista" class="stack"></main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/dompurify/3.1.6/purify.min.js"></script>
+<script>
+(function(){
+"use strict";
+var ETAPAS=[["funcional","1. Funcional"],["pantallas","2. Pantallas"],["arquitectura","3. Arquitectura"],["setup","4. Setup"],["plan","5. Plan de fases"],["modelo","Modelo de datos"]];
+var NOMBRE_ETAPA=["","Funcional","Pantallas","Arquitectura","Setup","Plan de fases","Construcción"];
+var HUMANOS={"Aprobada":1,"Cerrada":1,"Aceptada":1};
+var S={info:null,probar:null,etapas:[],fases:[],entregas:[],obs:[],dec:[],backlog:[],pantallas:[],salidas:[],
+  marcas:{},subs:{},abiertos:{},tab:"inicio",sub:"funcional",hist:null,filtro:"",pantSel:null,editando:null,borrador:"",
+  puede:true,uid:null,db:null,assets:null,listo:false,sucio:false};
+var vista=document.getElementById("vista"), tabsEl=document.getElementById("tabs"), avisoEl=document.getElementById("aviso");
+
+/* ---------- utilidades ---------- */
+function h(tag,attrs){
+  var e=document.createElement(tag), val, k, v;
+  if(attrs) for(k in attrs){ v=attrs[k];
+    if(v==null||v===false) continue;
+    if(k==="class") e.className=v;
+    else if(k==="text") e.textContent=v;
+    else if(k==="value") val=v;
+    else if(k.slice(0,2)==="on") e.addEventListener(k.slice(2),v);
+    else e.setAttribute(k, v===true?"":v);
+  }
+  var kids=Array.prototype.slice.call(arguments,2);
+  (function add(list){ list.forEach(function(c){
+    if(c==null||c===false) return;
+    if(Array.isArray(c)) return add(c);
+    e.append(c.nodeType?c:document.createTextNode(String(c)));
+  });})(kids);
+  if(val!==undefined) e.value=val;
+  return e;
+}
+function md(t){
+  var d=h("div",{class:"md"});
+  if(!t) return d;
+  if(window.marked&&window.DOMPurify){
+    d.innerHTML=window.DOMPurify.sanitize(window.marked.parse(String(t)));
+    d.querySelectorAll("code.language-mermaid").forEach(function(c){var p=c.parentElement;p.className="mermaid";p.textContent=c.textContent;});
+  } else { d.textContent=String(t); d.style.whiteSpace="pre-wrap"; }
+  return d;
+}
+/* Los diagramas se dibujan después de pintar. La librería se baja solo si hay alguno. */
+var MERMAID="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js", svgs={}, nDiag=0, cargando=false;
+function dibujar(){
+  var nodos=vista.querySelectorAll("pre.mermaid");
+  if(!nodos.length) return;
+  if(!window.mermaid){
+    if(cargando) return; cargando=true;
+    var s=document.createElement("script"); s.src=MERMAID;
+    s.onload=function(){
+      var t=document.documentElement.getAttribute("data-theme");
+      var oscuro=t?t==="dark":window.matchMedia("(prefers-color-scheme: dark)").matches;
+      window.mermaid.initialize({startOnLoad:false,securityLevel:"strict",theme:oscuro?"dark":"default"});
+      dibujar();
+    };
+    document.head.appendChild(s); return;
+  }
+  nodos.forEach(function(p){
+    var t=p.textContent;
+    if(svgs[t]){ p.innerHTML=svgs[t]; return; }
+    window.mermaid.render("diag"+(++nDiag),t).then(function(r){ svgs[t]=r.svg; dibujar(); }).catch(function(){});
+  });
+}
+function src(v){
+  v=String(v||"");
+  if(/^[0-9a-f]{32}$/.test(v)) return "/_blob/"+v;
+  if(/^[\w\-.\/]+\.(png|jpe?g|webp|gif)$/i.test(v)&&v.indexOf("..")<0) return v;
+  return null;
+}
+function chip(estado){ return h("span",{class:"chip"+(HUMANOS[estado]?" h":""),text:estado||"—"}); }
+function aviso(t){ avisoEl.textContent=t; avisoEl.hidden=!t; }
+function fallo(e){
+  if(e&&e.code==="invalid_argument"){ S.puede=false; aviso("No tenés permiso para escribir en este proyecto. Lo ves en modo lectura."); pedir(); }
+  else if(e&&e.code==="revoked") aviso("Se perdió el acceso a los datos. Recargá la página.");
+  else aviso("No se pudo guardar o leer. Recargá y probá de nuevo.");
+}
+function vacio(t){ return h("p",{class:"mut",text:t}); }
+function porId(list,id){ for(var i=0;i<list.length;i++) if(list[i].id===id) return list[i]; return null; }
+function abierta(){ var r=null; S.entregas.forEach(function(e){ if(e.estado==="En revisión") r=e; }); return r; }
+
+/* ---------- escritura ---------- */
+var colas={};
+function cola(path,fn){
+  var ref=S.db.doc(path);
+  var p=(colas[path]||Promise.resolve()).then(function(){return fn(ref);}).catch(fallo);
+  colas[path]=p; return p;
+}
+function marcas(owner){
+  if(!S.subs[owner]&&S.db){
+    S.subs[owner]=S.db.collection("marcas/"+owner+"/items").onSnapshot(function(s){
+      var o={}; s.docs.forEach(function(d){o[d.id]=Object.assign({},d.data());}); S.marcas[owner]=o; pedir();
+    },fallo);
+  }
+  return S.marcas[owner]||{};
+}
+function guardar(owner,mid,data){
+  var d=Object.assign({},data,{por:S.uid||null,cuando:new Date().toISOString()});
+  if(!S.marcas[owner]) S.marcas[owner]={};
+  S.marcas[owner][mid]=d; pedir();
+  return cola("marcas/"+owner+"/items/"+mid,function(ref){return ref.set(d);});
+}
+function quitar(owner,mid){
+  if(S.marcas[owner]) delete S.marcas[owner][mid]; pedir();
+  return cola("marcas/"+owner+"/items/"+mid,function(ref){return ref.delete();});
+}
+
+/* ---------- piezas ---------- */
+function casilla(id,label,checked,lock,fn,cls){
+  return h("label",{class:"box"+(cls?" "+cls:""),for:id},
+    h("input",{type:"checkbox",id:id,checked:!!checked,disabled:!!lock,onchange:fn}),h("span",{text:label}));
+}
+function capturas(owner,mid,m,lock){
+  var ids=(m.capturas||[]).filter(function(x){return src(x);});
+  var input=S.assets&&!lock&&h("input",{type:"file",id:mid+"-file",accept:"image/png,image/jpeg,image/webp,image/gif","aria-label":"Adjuntar captura",onchange:function(ev){
+    var f=ev.target.files&&ev.target.files[0]; if(!f) return;
+    S.assets.upload(f).then(function(r){
+      var cur=marcas(owner)[mid]||m;
+      guardar(owner,mid,Object.assign({},cur,{capturas:(cur.capturas||[]).concat([r.id])}));
+    }).catch(function(e){ aviso(e&&e.code==="too_large"?"La captura pesa más de 20 MB.":"No se pudo subir la captura."); });
+  }});
+  if(!ids.length&&!input) return null;
+  return h("div",{class:"stack",style:"gap:6px"},
+    ids.length?h("div",{class:"caps"},ids.map(function(x){return h("a",{href:src(x),target:"_blank",rel:"noopener"},h("img",{src:src(x),alt:"Captura adjunta",loading:"lazy"}));})):null,
+    input?h("label",{class:"mut",for:mid+"-file"},"Adjuntar captura: ",input):null);
+}
+function detalle(owner,mid,m,lock,placeholder){
+  return h("div",{class:"stack",style:"gap:6px"},
+    h("textarea",{id:mid+"-txt","aria-label":placeholder,placeholder:placeholder,disabled:!!lock,value:m.texto||"",onchange:function(ev){
+      var cur=marcas(owner)[mid]||m; guardar(owner,mid,Object.assign({},cur,{texto:ev.target.value}));
+    }}),
+    capturas(owner,mid,m,lock));
+}
+function parte(n,titulo){
+  return h("div",{class:"part"},h("span",{class:"num",text:n}),
+    h("div",{class:"stack"},h("h3",{text:titulo}),Array.prototype.slice.call(arguments,2)));
+}
+function otras(owner,M,lock){
+  var ids=Object.keys(M).filter(function(k){return k.indexOf("otra-")===0;}).sort();
+  return [
+    ids.map(function(mid){ return h("div",{class:"paso"},
+      detalle(owner,mid,M[mid],lock,"Qué viste"),
+      !lock&&h("div",null,h("button",{class:"btn",type:"button",onclick:function(){quitar(owner,mid);}},"Quitar"))); }),
+    !lock&&h("div",null,h("button",{class:"btn",type:"button",onclick:function(){
+      guardar(owner,"otra-"+Date.now().toString(36),{resultado:"obs",texto:""});
+    }},"Observo algo más"))
+  ];
+}
+
+/* ---------- entrega ---------- */
+function vPaso(owner,p,m,lock){
+  var mid="paso-"+p.id;
+  function set(v){ guardar(owner,mid,Object.assign({},m,{resultado:m.resultado===v?null:v})); }
+  return h("div",{class:"paso"},
+    h("div",null,p.ref&&h("p",{class:"ref"},h("b",{text:p.ref}),p.refNota?" · "+p.refNota:""),md(p.contexto)),
+    h("div",null,h("h4",{text:"Qué hacer"}),md(p.hacer)),
+    h("div",null,h("h4",{text:"Qué esperar"}),md(p.esperar)),
+    h("div",{class:"res"},
+      casilla(mid+"-ok","Anda bien",m.resultado==="ok",lock,function(){set("ok");}),
+      casilla(mid+"-obs","Observo",m.resultado==="obs",lock,function(){set("obs");},"x"),
+      m.resultado==="obs"&&detalle(owner,mid,m,lock,"Qué viste")));
+}
+function vDecision(owner,id,M,lock){
+  var d=porId(S.dec,id)||{id:id,texto:"(decisión sin datos)"}, mid="dec-"+id, m=M[mid]||{};
+  function set(v){ guardar(owner,mid,Object.assign({},m,{voto:m.voto===v?null:v})); }
+  return h("div",{class:"paso"},
+    h("p",{class:"ref"},h("b",{text:id})," ",d.explicita&&h("span",{class:"tag",text:"aprobación explícita"})),
+    md(d.texto),
+    h("div",{class:"res"},
+      d.explicita&&casilla(mid+"-si","Apruebo",m.voto==="apruebo",lock,function(){set("apruebo");}),
+      casilla(mid+"-no","No estoy de acuerdo",m.voto==="no",lock,function(){set("no");},"x"),
+      m.voto==="no"&&detalle(owner,mid,m,lock,"Por qué, o qué preferís")));
+}
+function vTriage(owner,M,lock){
+  var nuevos=S.backlog.filter(function(b){return b.estado==="Nuevo";});
+  if(!nuevos.length) return null;
+  return h("div",{class:"stack",style:"gap:8px"},
+    h("p",{class:"mut",text:"Pedidos nuevos del backlog: dales destino en esta misma pasada."}),
+    nuevos.map(function(b){
+      var mid="backlog-"+b.id, m=M[mid]||{};
+      return h("div",{class:"row"},h("span",{style:"flex:1 1 240px;min-width:0",text:b.pedido||b.id}),
+        h("select",{id:mid+"-sel","aria-label":"Destino de "+(b.pedido||b.id),disabled:!!lock,value:m.destino||"",onchange:function(ev){guardar(owner,mid,{destino:ev.target.value});}},
+          h("option",{value:""},"Sin decidir"),
+          S.fases.filter(function(f){return f.estado==="Planificada"||f.estado==="En construcción";}).map(function(f){return h("option",{value:f.id},f.id+" · "+(f.nombre||""));}),
+          h("option",{value:"Fase nueva"},"Fase nueva"),h("option",{value:"Descartado"},"Descartar")));
+    }));
+}
+function vEntrega(e,soloLectura){
+  var owner=e.id, M=marcas(owner), lock=soloLectura||e.estado==="Cerrada"||!S.puede;
+  var pasos=e.pasos||[], hechos=pasos.filter(function(p){var m=M["paso-"+p.id];return m&&m.resultado;}).length;
+  var c=M.cierre||{}, decs=e.decisiones||[];
+  function cerrar(v){ guardar(owner,"cierre",{decision:c.decision===v?null:v}); }
+  return h("div",{class:"stack"},
+    h("div",{class:"row"},h("h2",{text:"Entrega "+e.id}),chip(e.estado),e.fecha&&h("span",{class:"mut",text:e.fecha})),
+    parte(1,"Cómo usar esta pestaña",h("p",{class:"mut",text:"Probá cada paso del guion y marcá “Anda bien” u “Observo”. Si observás, contá qué viste y, si podés, adjuntá una captura. Al terminar, marcá el cierre al final: con eso alcanza."})),
+    parte(2,"Qué trae",md(e.queTrae),e.commit&&h("p",{class:"mut"},"Commit publicado: ",h("code",{text:e.commit}))),
+    parte(3,"Ya verificado automáticamente",md(e.verificado)),
+    parte(4,"Guion para probar",
+      h("p",{class:"mut",text:hechos+" de "+pasos.length+" pasos marcados. Los que queden sin marcar al cierre pasan a la entrega siguiente como “No probado”."}),
+      pasos.map(function(p){return vPaso(owner,p,M["paso-"+p.id]||{},lock);})),
+    parte(5,"Decisiones de desarrollo a validar",
+      decs.length?h("p",{class:"mut",text:"Sin marcar al cierre, quedan aceptadas. Las de aprobación explícita necesitan la casilla “Apruebo”."}):vacio("Esta entrega no trae decisiones nuevas."),
+      decs.map(function(id){return vDecision(owner,id,M,lock);})),
+    parte(6,"Otras observaciones",h("p",{class:"mut",text:"Para lo que no entra en ningún paso."}),otras(owner,M,lock)),
+    parte(7,"Cierre de la entrega",
+      vTriage(owner,M,lock),
+      h("div",{class:"res",style:"border-top:none;padding-top:0"},
+        casilla("cierre-ok","Apruebo esta entrega",c.decision==="apruebo",lock,function(){cerrar("apruebo");}),
+        casilla("cierre-obs","Cierro con observaciones",c.decision==="observaciones",lock,function(){cerrar("observaciones");},"x")),
+      c.decision&&e.estado!=="Cerrada"&&h("p",{class:"aviso",text:"Cierre registrado. Avisale a Desarrollo: en Claude Code se corre /procesar-entrega."})));
+}
+
+/* ---------- vistas ---------- */
+function vInicio(){
+  var i=S.info;
+  if(!i) return h("div",{class:"card stack"},h("h2",{text:"Este proyecto todavía no tiene datos"}),
+    h("p",{class:"mut",text:S.listo?"En Claude Code, dentro del repo, corré /iniciar-proyecto. Va a cargar el nombre, los roles y la etapa 1 (Funcional).":"Leyendo los datos del proyecto…"}));
+  var e=abierta(), enRev=S.etapas.filter(function(x){return x.estado==="En revisión";})[0], hoy;
+  if(e) hoy=h("div",{class:"card hoy stack",style:"gap:8px"},h("h2",{text:"Hay una entrega para probar: "+e.id}),
+    h("div",null,h("button",{class:"btn go",type:"button",onclick:function(){ir("entrega");}},"Abrir la entrega")));
+  else if(enRev) hoy=h("div",{class:"card hoy stack",style:"gap:8px"},h("h2",{text:"Hay una etapa para revisar: "+(enRev.titulo||enRev.id)}),
+    h("div",null,h("button",{class:"btn go",type:"button",onclick:function(){S.sub=enRev.id;ir("definicion");}},"Abrir la etapa")));
+  else hoy=h("div",{class:"card stack",style:"gap:4px"},h("h2",{text:"Nada para revisar ahora"}),h("p",{class:"mut",text:"Cuando haya una etapa o una entrega en revisión, aparece acá."}));
+  var amb=i.ambientes||{}, roles=i.roles||{};
+  return h("div",{class:"stack"},
+    hoy,
+    h("div",{class:"card stack",style:"gap:10px"},h("h3",{text:"En qué etapa está"}),
+      h("div",{class:"row"},[1,2,3,4,5,6].map(function(n){return h("span",{class:"chip"+(n===i.etapa?" on":""),text:n+" · "+NOMBRE_ETAPA[n]});})),
+      i.proximoPaso&&h("p",null,h("b",{text:"Próximo paso: "}),i.proximoPaso)),
+    h("div",{class:"card stack",style:"gap:6px"},h("h3",{text:"Qué hay en cada ambiente"}),
+      h("div",{class:"tbl"},h("table",null,
+        h("tr",null,h("th",{text:"develop"}),h("td",{text:amb.develop||"—"})),
+        h("tr",null,h("th",{text:"revisión"}),h("td",{text:amb.revision||"—"})),
+        h("tr",null,h("th",{text:"producción"}),h("td",{text:amb.produccion||"—"}))))),
+    h("div",{class:"card stack",style:"gap:6px"},h("h3",{text:"Fases"}),
+      S.fases.length?h("div",{class:"tbl"},h("table",null,
+        h("tr",null,h("th",{text:"Fase"}),h("th",{text:"Criterio de fin"}),h("th",{text:"Estado"})),
+        S.fases.map(function(f){return h("tr",null,h("td",null,h("b",{text:f.id})," ",f.nombre||""),h("td",{text:f.criterio||""}),h("td",null,chip(f.estado)));}))):
+        vacio("Las fases aparecen cuando se aprueba el plan (etapa 5).")),
+    h("div",{class:"card stack",style:"gap:6px"},h("h3",{text:"Quién hace qué"}),
+      h("p",{class:"mut"},"OO: "+(roles.oo||"—")+" · Analista: "+(roles.analista||"—")+" · QA: "+(roles.qa||"—")+" · Desarrollo: "+(roles.desarrollo||"—")),
+      h("p",{class:"mut",text:"Las casillas las marcan las personas. Claude Code prepara y registra, pero nunca aprueba ni cierra."})));
+}
+function vEtapa(id){
+  var e=porId(S.etapas,id);
+  if(!e) return vacio("Esta parte todavía no empezó.");
+  var owner="etapa-"+id+"-r"+(e.ronda||1), enRev=e.estado==="En revisión", lock=!enRev||!S.puede;
+  var cab=h("div",{class:"row"},h("h2",{text:e.titulo||id}),e.estado&&chip(e.estado),e.version&&h("span",{class:"mut",text:"versión "+e.version}));
+  var cuerpo;
+  if(S.editando===id){
+    cuerpo=h("div",{class:"stack",style:"gap:8px"},
+      h("textarea",{class:"largo",id:"editor","aria-label":"Texto de "+(e.titulo||id),value:S.borrador,oninput:function(ev){S.borrador=ev.target.value;}}),
+      h("div",{class:"row"},
+        h("button",{class:"btn go",type:"button",onclick:function(){
+          var t=S.borrador; S.editando=null;
+          cola("etapas/"+id,function(ref){return ref.update({md:t,editadoPor:S.uid||null,editado:new Date().toISOString()});}); pedir();
+        }},"Guardar"),
+        h("button",{class:"btn",type:"button",onclick:function(){S.editando=null;pedir();}},"Cancelar"),
+        h("span",{class:"mut",text:"Se escribe en Markdown."})));
+  } else {
+    cuerpo=h("div",{class:"stack",style:"gap:10px"},
+      e.md?md(e.md):vacio("Todavía sin contenido."),
+      e.editable&&S.puede&&e.estado!=="Aprobada"&&h("div",null,h("button",{class:"btn",type:"button",onclick:function(){S.editando=id;S.borrador=e.md||"";pedir();}},"Editar el texto")));
+  }
+  var pant=null;
+  if(id==="pantallas"){
+    var edita=S.puede&&e.estado!=="Aprobada", sube=edita&&S.assets;
+    pant=h("div",{class:"stack",style:"gap:10px"},
+      sube&&S.pantallas.length?h("p",{class:"mut",text:"Para cargar una imagen: tocá el cuadro y pegala con Ctrl+V, o elegí un archivo."}):null,
+      h("div",{class:"grid"},S.pantallas.map(function(p){
+        var s=src(p.img), sel=sube&&S.pantSel===p.id;
+        var cuadro=s?h("img",{src:s,alt:p.nombre||p.id,loading:"lazy"}):h("div",{class:"vacio",text:sel?"pegá con Ctrl+V":"sin imagen"});
+        return h("figure",{class:sel?"sel":null},
+          sube?h("button",{type:"button",class:"cuadro","aria-pressed":String(!!sel),"aria-label":"Elegir "+p.id+" para pegarle una imagen",onclick:function(){S.pantSel=sel?null:p.id;pedir();}},cuadro):cuadro,
+          h("figcaption",null,h("b",{text:p.id})," ",p.nombre||""),
+          sube&&h("input",{type:"file",id:"pant-"+p.id+"-file",accept:"image/png,image/jpeg,image/webp,image/gif","aria-label":"Elegir imagen de "+p.id,onchange:function(ev){
+            var f=ev.target.files&&ev.target.files[0]; if(f) subirPantalla(p.id,f);}}));})),
+      edita&&h("form",{class:"card stack",style:"gap:8px",onsubmit:function(ev){
+        ev.preventDefault();
+        var c=document.getElementById("pant-cod"), n=document.getElementById("pant-nom");
+        var cod=c.value.trim().toUpperCase(), nom=n.value.trim();
+        if(!/^[A-Z0-9_-]{1,20}$/.test(cod)){ aviso("El código lleva solo letras y números, por ejemplo P03."); return; }
+        if(porId(S.pantallas,cod)){ aviso("Ya hay una pantalla con el código "+cod+"."); return; }
+        aviso(""); c.value=""; n.value=""; c.blur(); n.blur();
+        cola("pantallas/"+cod,function(ref){return ref.set({nombre:nom,img:"",por:S.uid||null,cuando:new Date().toISOString()});});
+      }},h("h3",{text:"Agregar pantalla"}),
+        h("div",{class:"row"},
+          h("input",{type:"text",id:"pant-cod","aria-label":"Código",placeholder:"Código (P03)",required:true,style:"flex:0 0 130px;width:130px"}),
+          h("input",{type:"text",id:"pant-nom","aria-label":"Nombre",placeholder:"Nombre de la pantalla",required:true,style:"flex:1 1 200px;width:auto"}),
+          h("button",{class:"btn go",type:"submit"},"Agregar")),
+        h("p",{class:"mut",text:"Si la pantalla no está en el funcional, Claude Code la suma al procesar la etapa."})));
+  }
+  var rev=null;
+  if(e.estado==="En revisión"||e.estado==="Aprobada"){
+    var M=marcas(owner), c=M.cierre||{};
+    rev=h("div",{class:"card stack",style:"gap:8px"},h("h3",{text:"Revisión de la etapa"}),
+      e.aprueba&&h("p",{class:"mut",text:"Esta etapa la aprueba "+e.aprueba+", no el OO."}),
+      otras(owner,M,lock),
+      h("div",{class:"res"},
+        casilla(owner+"-ok","Apruebo esta etapa",c.decision==="apruebo",lock,function(){guardar(owner,"cierre",{decision:c.decision==="apruebo"?null:"apruebo"});}),
+        casilla(owner+"-obs","Devuelvo con observaciones",c.decision==="observaciones",lock,function(){guardar(owner,"cierre",{decision:c.decision==="observaciones"?null:"observaciones"});},"x")),
+      c.decision&&enRev&&h("p",{class:"aviso",text:"Revisión registrada. Avisale a Desarrollo: en Claude Code se corre /etapa."}));
+  }
+  return h("div",{class:"stack"},cab,h("div",{class:"card"},cuerpo),pant,rev);
+}
+function vDefinicion(){
+  return h("div",{class:"stack"},
+    h("div",{class:"subbar"},ETAPAS.map(function(x){return h("button",{type:"button","aria-pressed":String(S.sub===x[0]),onclick:function(){S.sub=x[0];S.editando=null;pedir();}},x[1]);})),
+    vEtapa(S.sub));
+}
+function plegable(key,resumen,cuerpo){
+  return h("details",{open:!!S.abiertos[key],ontoggle:function(ev){S.abiertos[key]=ev.target.open;}},h("summary",null,resumen),h("div",{class:"stack"},cuerpo));
+}
+function vObservaciones(){
+  var estados=["","Abierta","Corregida","Cerrada","Descartada","Pospuesta"];
+  var list=S.obs.filter(function(o){return !S.filtro||o.estado===S.filtro;});
+  return h("div",{class:"stack"},
+    h("div",{class:"row"},h("h2",{text:"Observaciones"}),
+      h("select",{id:"filtro-obs","aria-label":"Filtrar por estado",value:S.filtro,onchange:function(ev){S.filtro=ev.target.value;ev.target.blur();pedir();}},
+        estados.map(function(x){return h("option",{value:x},x||"Todas");}))),
+    list.length?list.map(function(o){
+      var caps=(o.capturas||[]).filter(src);
+      return plegable("obs-"+o.id,[h("b",{class:"id",text:o.id}),h("span",{class:"ttl",text:o.titulo||""}),h("span",{class:"chip",text:o.tipo||"—"}),h("span",{class:"chip",text:o.gravedad||"—"}),chip(o.estado)],
+        [md(o.detalle),o.entrega&&h("p",{class:"mut",text:"Nació en "+o.entrega+(o.fase?" · fase "+o.fase:"")}),
+         caps.length?h("div",{class:"caps"},caps.map(function(x){return h("a",{href:src(x),target:"_blank",rel:"noopener"},h("img",{src:src(x),alt:"Captura de "+o.id,loading:"lazy"}));})):null,
+         o.historial&&md(o.historial)]);
+    }):vacio(S.obs.length?"Ninguna con ese estado.":"Todavía no hay observaciones. Nacen cuando alguien marca “Observo” y Claude Code les pone número."));
+}
+function vDecisiones(){
+  return h("div",{class:"stack"},h("h2",{text:"Decisiones"}),
+    S.dec.length?S.dec.map(function(d){
+      return plegable("dec-"+d.id,[h("b",{class:"id",text:d.id}),h("span",{class:"ttl",text:d.titulo||""}),d.explicita&&h("span",{class:"tag",text:"aprobación explícita"}),chip(d.estado)],
+        [md(d.texto),h("p",{class:"mut",text:"Quién: "+(d.quien||"—")+" · Cambia en el funcional: "+(d.seccion||"—")+(d.entrega?" · Se valida en "+d.entrega:"")})]);
+    }):vacio("Todavía no hay decisiones registradas."));
+}
+function vBacklog(){
+  var form=S.puede&&h("form",{class:"card stack",style:"gap:8px",onsubmit:function(ev){
+    ev.preventDefault();
+    var t=document.getElementById("pedido-txt"), p=document.getElementById("pedido-pri");
+    var txt=t.value.trim(); if(!txt||!S.db) return;
+    t.value=""; t.blur();
+    S.db.collection("backlog").add({pedido:txt,prioridad:p.value,estado:"Nuevo",destino:"",por:S.uid||null,cuando:new Date().toISOString()}).catch(fallo);
+  }},h("h3",{text:"Agregar un pedido"}),
+    h("input",{type:"text",id:"pedido-txt","aria-label":"Pedido",placeholder:"Qué se pide, en una frase",required:true}),
+    h("div",{class:"row"},h("select",{id:"pedido-pri","aria-label":"Prioridad"},h("option",{value:"Media"},"Prioridad media"),h("option",{value:"Alta"},"Prioridad alta"),h("option",{value:"Baja"},"Prioridad baja")),
+      h("button",{class:"btn go",type:"submit"},"Agregar")),
+    h("p",{class:"mut",text:"Un pedido nuevo no entra en la fase en curso. El OO le da destino al cerrar la entrega."}));
+  return h("div",{class:"stack"},h("h2",{text:"Backlog"}),
+    S.backlog.length?h("div",{class:"card tbl"},h("table",null,
+      h("tr",null,h("th",{text:"Pedido"}),h("th",{text:"Prioridad"}),h("th",{text:"Destino"}),h("th",{text:"Estado"})),
+      S.backlog.map(function(b){return h("tr",null,h("td",{text:b.pedido||""}),h("td",{text:b.prioridad||"—"}),h("td",{text:b.destino||"Sin decidir"}),h("td",null,chip(b.estado)));}))):vacio("Sin pedidos por ahora."),
+    form);
+}
+function vProbar(){
+  return h("div",{class:"stack"},h("h2",{text:"Cómo probar"}),
+    S.probar&&S.probar.md?h("div",{class:"card"},md(S.probar.md)):vacio("Acá van la dirección de revisión, las cuentas de prueba y los trucos. Se completa al llegar a la etapa 6."));
+}
+function vHistorial(){
+  var cerradas=S.entregas.filter(function(e){return e.estado==="Cerrada";}).reverse(), sel=S.hist&&porId(S.entregas,S.hist);
+  return h("div",{class:"stack"},h("h2",{text:"Historial"}),
+    h("div",{class:"card stack",style:"gap:6px"},h("h3",{text:"Salidas a producción"}),
+      S.salidas.length?h("div",{class:"tbl"},h("table",null,
+        h("tr",null,h("th",{text:"Tag"}),h("th",{text:"Fecha"}),h("th",{text:"Qué salió"})),
+        S.salidas.slice().reverse().map(function(s){return h("tr",null,h("td",null,h("code",{text:s.tag||s.id})),h("td",{text:s.fecha||""}),h("td",{text:s.fases||""}));}))):vacio("Todavía no hubo salidas.")),
+    h("div",{class:"card stack",style:"gap:8px"},h("h3",{text:"Entregas cerradas"}),
+      cerradas.length?h("div",{class:"subbar"},cerradas.map(function(e){return h("button",{type:"button","aria-pressed":String(S.hist===e.id),onclick:function(){S.hist=S.hist===e.id?null:e.id;pedir();}},e.id+(e.fecha?" · "+e.fecha:""));})):vacio("Todavía no hay entregas cerradas.")),
+    sel&&vEntrega(sel,true));
+}
+
+/* ---------- pintar ---------- */
+function ir(t){ S.tab=t; S.editando=null; try{localStorage.setItem("tab",t);}catch(_){ } pintar(); window.scrollTo(0,0); }
+function pintar(){
+  var e=abierta(), abiertasObs=S.obs.filter(function(o){return o.estado==="Abierta";}).length;
+  var list=[["inicio","Inicio"]];
+  if(e) list.push(["entrega",e.id+(e.fecha?" · "+e.fecha:"")+" · "+e.estado]);
+  list.push(["definicion","Definición"],["observaciones","Observaciones"+(abiertasObs?" ("+abiertasObs+")":"")],["decisiones","Decisiones"],["backlog","Backlog"],["probar","Cómo probar"],["historial","Historial"]);
+  if(S.tab==="entrega"&&!e) S.tab="inicio";
+  tabsEl.replaceChildren.apply(tabsEl,list.map(function(x){
+    return h("button",{type:"button",role:"tab",id:"tab-"+x[0],"aria-selected":String(S.tab===x[0]),onclick:function(){ir(x[0]);}},x[1]);}));
+  if(S.info&&S.info.nombre){ document.getElementById("nombre").textContent=S.info.nombre; }
+  var v;
+  switch(S.tab){
+    case "entrega": v=vEntrega(e,false); break;
+    case "definicion": v=vDefinicion(); break;
+    case "observaciones": v=vObservaciones(); break;
+    case "decisiones": v=vDecisiones(); break;
+    case "backlog": v=vBacklog(); break;
+    case "probar": v=vProbar(); break;
+    case "historial": v=vHistorial(); break;
+    default: v=vInicio();
+  }
+  vista.replaceChildren(v);
+  dibujar();
+}
+var pend=false;
+function pedir(){
+  if(pend) return; pend=true;
+  requestAnimationFrame(function(){
+    pend=false;
+    var a=document.activeElement;
+    if(a&&vista.contains(a)&&(a.tagName==="TEXTAREA"||a.tagName==="SELECT"||(a.tagName==="INPUT"&&a.type==="text"))){ S.sucio=true; return; }
+    pintar();
+  });
+}
+vista.addEventListener("focusout",function(){ if(S.sucio){ S.sucio=false; setTimeout(pedir,0); } });
+
+/* ---------- imágenes de pantallas ---------- */
+function subirPantalla(cod,f){
+  if(!S.assets||!/^image\//.test(f.type||"")){ aviso("Eso no es una imagen."); return; }
+  aviso("");
+  S.assets.upload(f).then(function(r){
+    if(S.pantSel===cod) S.pantSel=null;
+    return cola("pantallas/"+cod,function(ref){return ref.update({img:r.id,por:S.uid||null,cuando:new Date().toISOString()});});
+  }).catch(function(e){ aviso(e&&e.code==="too_large"?"La imagen pesa más de 20 MB.":"No se pudo subir la imagen."); });
+}
+document.addEventListener("paste",function(ev){
+  if(S.tab!=="definicion"||S.sub!=="pantallas"||!S.pantSel||!S.assets||!S.puede) return;
+  var t=ev.target, et=porId(S.etapas,"pantallas");
+  if(t&&(t.tagName==="TEXTAREA"||(t.tagName==="INPUT"&&t.type==="text"))) return;
+  if(!et||et.estado==="Aprobada") return;
+  var items=(ev.clipboardData&&ev.clipboardData.items)||[];
+  for(var i=0;i<items.length;i++){
+    if(items[i].kind==="file"&&/^image\//.test(items[i].type)){
+      var f=items[i].getAsFile();
+      if(f){ ev.preventDefault(); subirPantalla(S.pantSel,f); }
+      return;
+    }
+  }
+  aviso("Lo que hay en el portapapeles no es una imagen.");
+});
+
+/* ---------- datos ---------- */
+function escuchar(col,key){
+  S.db.collection(col).onSnapshot(function(s){
+    S[key]=s.docs.map(function(d){return Object.assign({id:d.id},d.data());}); pedir();
+  },fallo);
+}
+function start(){
+  try{ var t=(location.hash||"").slice(1)||localStorage.getItem("tab"); if(t) S.tab=t; }catch(_){ }
+  pintar();
+  var c=window.claude;
+  if(!c||!c.use){ S.listo=true; aviso("Abrí esta página desde claude.ai para ver los datos del proyecto."); pintar(); return; }
+  Promise.all([c.use("db"),c.use("user"),c.use("assets")]).then(function(r){
+    var db=r[0], user=r[1]; S.assets=r[2];
+    if(!db){ S.listo=true; aviso("No se pueden leer los datos. Iniciá sesión en claude.ai y recargá."); pintar(); return; }
+    S.db=db;
+    if(user){
+      user.id().then(function(id){S.uid=id;});
+      user.can("data.write").then(function(w){ if(w===false){S.puede=false;pedir();} });
+    }
+    db.doc("proyecto/info").onSnapshot(function(s){S.info=s.exists?s.data():null;S.listo=true;pedir();},fallo);
+    db.doc("proyecto/probar").onSnapshot(function(s){S.probar=s.exists?s.data():null;pedir();},fallo);
+    escuchar("etapas","etapas"); escuchar("fases","fases"); escuchar("entregas","entregas");
+    escuchar("observaciones","obs"); escuchar("decisiones","dec"); escuchar("backlog","backlog");
+    escuchar("pantallas","pantallas"); escuchar("salidas","salidas");
+  });
+}
+start();
+})();
+</script>
